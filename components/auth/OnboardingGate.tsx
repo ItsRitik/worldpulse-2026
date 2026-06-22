@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * OnboardingGate — blocking modal shown after login until the profile is complete.
+ * OnboardingGate - blocking modal shown after login until the profile is complete.
  * Two mandatory steps, both saved to user_profiles:
  *   1. unique manager name (display_name)
  *   2. favourite World Cup team (fav_team_tla)
@@ -27,7 +27,7 @@ type WCTeam = { id: number; name: string; tla: string; logo: string }
 export function OnboardingGate() {
   const { user, loading: authLoading } = useAuth()
 
-  // Profile completeness — only fetched once we have a user
+  // Profile completeness - only fetched once we have a user
   const { data: prof, mutate } = useSWR<{ complete: boolean; profile: { display_name?: string; fav_team_tla?: string } | null }>(
     user ? '/api/profile' : null, fetcher, { revalidateOnFocus: false },
   )
@@ -48,7 +48,7 @@ export function OnboardingGate() {
     if (prof?.profile?.display_name && !prof.profile?.fav_team_tla) setStep(2)
   }, [prof]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Teams — only loaded when the gate is actually open
+  // Teams - only loaded when the gate is actually open
   const { data: teamsData } = useSWR<{ teams: WCTeam[] }>(
     needsOnboarding ? '/api/wc/teams' : null, fetcher, { revalidateOnFocus: false },
   )
@@ -74,7 +74,7 @@ export function OnboardingGate() {
       await mutate()   // re-fetch profile → complete → gate closes
     } catch (e: any) {
       setError(e.message)
-      // a name clash is a step-1 problem — send them back
+      // a name clash is a step-1 problem - send them back
       if (/taken|character/i.test(e.message)) setStep(1)
       setSaving(false)
     }
@@ -106,7 +106,7 @@ export function OnboardingGate() {
           </p>
         </div>
 
-        {/* Step 1 — name */}
+        {/* Step 1 - name */}
         {step === 1 && (
           <div className="p-6">
             <input
@@ -133,7 +133,7 @@ export function OnboardingGate() {
           </div>
         )}
 
-        {/* Step 2 — team */}
+        {/* Step 2 - team */}
         {step === 2 && (
           <div className="p-6">
             <input

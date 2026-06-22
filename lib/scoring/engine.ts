@@ -1,5 +1,5 @@
 /**
- * Scoring Engine  —  pure, no DB, no API calls
+ * Scoring Engine  -  pure, no DB, no API calls
  * ═════════════════════════════════════════════
  * Input:  AFEvent[] + AFPlayerStat[]  (from API-Football)
  * Output: Map<api_player_id, PlayerScore>
@@ -49,7 +49,7 @@
  *  • Shots on target include goals (+6 is additional to the goal bonus).
  *  • Passes bonus: floor(completed_passes / 5) × 1.
  *  • Penalty missed: only if goalkeeper has NOT touched the ball
- *    (from events — detail === 'Missed Penalty').
+ *    (from events - detail === 'Missed Penalty').
  *  • Any event during penalty shootouts is NOT counted (post-FT events ignored).
  * ──────────────────────────────────────────────────────────────────────────────
  */
@@ -105,7 +105,7 @@ function buildOnFieldMap(events: AFEvent[]): Map<number, OnField> {
     const onId  = ev.assist?.id ?? null
     const min   = ev.time.elapsed ?? 0
 
-    // Player coming OFF — started at 0 unless already tracked (edge: double sub)
+    // Player coming OFF - started at 0 unless already tracked (edge: double sub)
     const existing = map.get(offId)
     if (existing) {
       existing.end = min
@@ -146,7 +146,7 @@ function onFieldAt(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * scoreMatch — derive every player's current points from raw API data.
+ * scoreMatch - derive every player's current points from raw API data.
  *
  * @param events     from GET /fixtures/events
  * @param stats      from GET /fixtures/players  (can be [] mid-first-half)
@@ -159,10 +159,19 @@ export function scoreMatch(
   currentMinute: number | null = null,
 ): Map<number, PlayerScore> {
 
-  // Stat-derived points (tackles, passes, saves…) have no per-event timestamp
-  // in the API — stamp them with the current match minute so the points log
-  // reads chronologically instead of everything claiming 90'.
-  const nowMin = currentMinute ?? 90
+  // Live vs final scoring.
+  // API-Football exposes stat aggregates (tackles, passes, saves, clean sheet…)
+  // as cumulative running totals with NO per-event timestamp. Awarding them
+  // mid-match means (a) their "minute" keeps jumping to the live clock on every
+  // tick, and (b) a clean sheet can be granted at 30' and silently revoked by a
+  // 70' goal. Neither is legit. So those points are only computed once the match
+  // is OVER (FT/AET/PEN); during play we score the timed match events only
+  // (goals, assists, cards…) plus appearances, each with their true minute.
+  const FINISHED = new Set(['FT', 'AET', 'PEN'])
+  const finished = FINISHED.has(matchStatus)
+
+  // For full-time stat points: stamp with the final minute so they never drift.
+  const finalMin = currentMinute ?? 90
 
   const scores = new Map<number, PlayerScore>()
 
@@ -240,7 +249,7 @@ export function scoreMatch(
           // -20 for missed penalty (goalkeeper hasn't touched the ball)
           addEv(p, { type: 'missed_penalty', minute: min, points: -20, label: 'Missed penalty' })
         } else {
-          // Normal goal or penalty goal — positional bonus
+          // Normal goal or penalty goal - positional bonus
           const gPts = goalPoints(pos)
           addEv(p, { type: 'goal', minute: min, points: gPts, label: 'Goal' })
           // Shot on target is additional (+6) and always accompanies a goal
@@ -291,26 +300,31 @@ export function scoreMatch(
       const minutes  = st.games.minutes ?? 0
       const isSub    = subMap.has(pId) || st.games.substitute === true
 
-      if (minutes < 1) continue   // Player did not play at all — no points
+      if (minutes < 1) continue   // Player did not play at all - no points
 
       const p = getPlayer(pId, pName, pos, teamId)
       p.position = pos   // ensure position is set from stats
 
       // ── Appearance ───────────────────────────────────────────────────────
+      // Awarded live - it's stable and gives the leaderboard substance during play.
       if (!isSub) {
         addEv(p, { type: 'starting_xi', minute: 0, points: 4, label: 'Starting XI' })
       } else {
         addEv(p, { type: 'sub_appearance', minute: onFieldWindows.get(pId)?.start ?? 0, points: 2, label: 'Came on as sub' })
       }
 
-      // ── Shots on target (EXCLUDING goals — those were counted in event pass) ─
+      // ── Everything below is a cumulative stat aggregate with no event time.
+      //    Only finalise it once the match is over, never mid-match. ──────────
+      if (!finished) continue
+
+      // ── Shots on target (EXCLUDING goals - those were counted in event pass) ─
       // shots.on from stats includes goals. We already gave +6 per goal in events.
       // So additional shots on target = shots.on - goals_in_events_for_this_player.
       // Count goal events for this player
       const goalsFromEvents = p.events.filter(e => e.type === 'goal').length
       const shotsOnTarget   = Math.max(0, (st.shots.on ?? 0) - goalsFromEvents)
       if (shotsOnTarget > 0) {
-        addEv(p, { type: 'shot_on_target', minute: nowMin, points: shotsOnTarget * 6, label: `${shotsOnTarget} shot${shotsOnTarget > 1 ? 's' : ''} on target` })
+        addEv(p, { type: 'shot_on_target', minute: finalMin, points: shotsOnTarget * 6, label: `${shotsOnTarget} shot${shotsOnTarget > 1 ? 's' : ''} on target` })
       }
 
       // ── Passes bonus (+1 per 5 completed) ────────────────────────────────
@@ -319,7 +333,7 @@ export function scoreMatch(
       const completed = Math.round(total * accuracy)
       const passBonus = Math.floor(completed / 5)
       if (passBonus > 0) {
-        addEv(p, { type: 'passes_bonus', minute: nowMin, points: passBonus, label: `${completed} passes (+${passBonus})` })
+        addEv(p, { type: 'passes_bonus', minute: finalMin, points: passBonus, label: `${completed} passes (+${passBonus})` })
       }
 
       // ── Chance created / key passes (exclude ones that earned an assist) ──
@@ -327,32 +341,32 @@ export function scoreMatch(
       const myAssists   = assistCount.get(pId) ?? 0
       const chanceCreated = Math.max(0, keyPasses - myAssists)
       if (chanceCreated > 0) {
-        addEv(p, { type: 'chance_created', minute: nowMin, points: chanceCreated * 3, label: `${chanceCreated} chance${chanceCreated > 1 ? 's' : ''} created` })
+        addEv(p, { type: 'chance_created', minute: finalMin, points: chanceCreated * 3, label: `${chanceCreated} chance${chanceCreated > 1 ? 's' : ''} created` })
       }
 
       // ── Tackles Won (+4 each) ──────────────────────────────────────────────
       const tackles = st.tackles.total ?? 0
       if (tackles > 0) {
-        addEv(p, { type: 'tackle_won', minute: nowMin, points: tackles * 4, label: `${tackles} tackle${tackles > 1 ? 's' : ''} won` })
+        addEv(p, { type: 'tackle_won', minute: finalMin, points: tackles * 4, label: `${tackles} tackle${tackles > 1 ? 's' : ''} won` })
       }
 
       // ── Interceptions Won (+4 each) ───────────────────────────────────────
       const intercepts = st.tackles.interceptions ?? 0
       if (intercepts > 0) {
-        addEv(p, { type: 'interception', minute: nowMin, points: intercepts * 4, label: `${intercepts} interception${intercepts > 1 ? 's' : ''}` })
+        addEv(p, { type: 'interception', minute: finalMin, points: intercepts * 4, label: `${intercepts} interception${intercepts > 1 ? 's' : ''}` })
       }
 
       // ── GK: Saves (+6 each) ───────────────────────────────────────────────
       if (pos === 'G') {
         const saves = st.goals.saves ?? 0
         if (saves > 0) {
-          addEv(p, { type: 'save', minute: nowMin, points: saves * 6, label: `${saves} save${saves > 1 ? 's' : ''}` })
+          addEv(p, { type: 'save', minute: finalMin, points: saves * 6, label: `${saves} save${saves > 1 ? 's' : ''}` })
         }
 
         // ── GK: Penalty saved (+50 each) ─────────────────────────────────
         const penSaved = st.penalty.saved ?? 0
         if (penSaved > 0) {
-          addEv(p, { type: 'penalty_save', minute: nowMin, points: penSaved * 50, label: `Penalty saved` })
+          addEv(p, { type: 'penalty_save', minute: finalMin, points: penSaved * 50, label: `Penalty saved` })
         }
       }
 
@@ -372,7 +386,7 @@ export function scoreMatch(
         )
 
         if (concededWhileOnField.length === 0) {
-          addEv(p, { type: 'clean_sheet', minute: nowMin, points: 20, label: 'Clean sheet' })
+          addEv(p, { type: 'clean_sheet', minute: finalMin, points: 20, label: 'Clean sheet' })
         }
       }
 
@@ -398,7 +412,7 @@ export function scoreMatch(
         }
 
         if (concededCount > 0) {
-          addEv(p, { type: 'goals_conceded', minute: nowMin, points: -(concededCount * 2), label: `${concededCount} goal${concededCount > 1 ? 's' : ''} conceded` })
+          addEv(p, { type: 'goals_conceded', minute: finalMin, points: -(concededCount * 2), label: `${concededCount} goal${concededCount > 1 ? 's' : ''} conceded` })
         }
       }
     }
@@ -412,7 +426,7 @@ export function scoreMatch(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * applyMultiplier — Captain ×2, Vice-Captain ×1.5, Player ×1.
+ * applyMultiplier - Captain ×2, Vice-Captain ×1.5, Player ×1.
  */
 export function applyMultiplier(
   base: number,

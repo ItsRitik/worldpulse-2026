@@ -118,19 +118,24 @@ export function Navbar() {
   const [tickerIndex, setTickerIndex] = useState(0)
   const { live, today, upcoming } = useFixtures()
 
-  // Ticker rotation: live first, then today's, then the next few upcoming
-  const allMatches: AFWCFixture[] = [...live, ...today, ...upcoming.slice(0, 5)]
-  const liveMatches = live
+  // Ticker pool: when a match is LIVE, lock the ticker to live games only so the
+  // score stays put (it refreshes in place via useFixtures) instead of cycling
+  // off to upcoming fixtures. Only when nothing is live do we shuffle through
+  // today's + the next few upcoming matches.
+  const pool: AFWCFixture[] = live.length > 0
+    ? live
+    : [...today, ...upcoming.slice(0, 5)]
 
   useEffect(() => {
-    if (allMatches.length === 0) return
+    // A single match (or a single live game) sticks - no rotation.
+    if (pool.length <= 1) return
     const interval = setInterval(() => {
-      setTickerIndex(i => (i + 1) % allMatches.length)
+      setTickerIndex(i => (i + 1) % pool.length)
     }, 4000)
     return () => clearInterval(interval)
-  }, [allMatches.length])
+  }, [pool.length])
 
-  const tickerMatch = allMatches[tickerIndex % Math.max(allMatches.length, 1)]
+  const tickerMatch = pool[tickerIndex % Math.max(pool.length, 1)]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-white dark:bg-gray-950 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center px-4 gap-0">
@@ -160,13 +165,13 @@ export function Navbar() {
         ))}
       </div>
 
-      {/* Live ticker — hidden on small screens */}
+      {/* Live ticker - hidden on small screens */}
       {tickerMatch && (
         <div className="hidden md:flex items-center gap-2 text-xs mr-4">
-          {liveMatches.length > 0 && (
+          {live.length > 0 && (
             <span className="flex items-center gap-1.5 bg-pulse-50 text-pulse-800 px-2.5 py-1 rounded-full font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-pulse-400 live-dot" />
-              {liveMatches.length} live
+              {live.length} live
             </span>
           )}
           <span className="flex items-center text-gray-400 dark:text-gray-500">
@@ -177,7 +182,7 @@ export function Navbar() {
             <span className="mx-2 font-medium text-gray-700 dark:text-gray-300">
               {tickerMatch.fixture.status.short === 'NS'
                 ? 'vs'
-                : `${tickerMatch.goals.home ?? 0} – ${tickerMatch.goals.away ?? 0}`}
+                : `${tickerMatch.goals.home ?? 0} - ${tickerMatch.goals.away ?? 0}`}
             </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={tickerMatch.teams.away.logo} alt="" width={14} height={14}
@@ -190,7 +195,7 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Auth widget — always visible */}
+      {/* Auth widget - always visible */}
       <AuthWidget />
     </nav>
   )

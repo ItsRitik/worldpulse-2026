@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * LiveTopPoints — compact link strip for live match cards.
+ * LiveTopPoints - compact link strip for live match cards.
  * Links to /fixtures/[id]/points: every player ranked high → low + the
  * minute-by-minute points log. Set `asLink={false}` when the strip sits
  * inside an element that is already a link (no nested <a> tags).

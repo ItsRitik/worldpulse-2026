@@ -37,10 +37,10 @@ export interface Match {
 
 export interface Prediction {
   matchId: number
-  homeWinProbability: number   // 0–100
+  homeWinProbability: number   // 0-100
   drawProbability: number
   awayWinProbability: number
-  confidence: number           // 0–100 — how sure the AI is
+  confidence: number           // 0-100 - how sure the AI is
   reasoning: string            // streaming AI text
   keyFactors: string[]
   xgHome: number
@@ -80,7 +80,7 @@ export interface ReactionItem {
 
 export interface TacticalProfile {
   teamCode: string
-  pressing: number             // 0–10
+  pressing: number             // 0-10
   buildUp: number
   setPieces: number
   defensiveLine: number
@@ -101,7 +101,7 @@ export interface ApiResponse<T> {
 
 // ── Fantasy 1v1 ───────────────────────────────────────────────────────────────
 
-/** A pickable player for a match — served by /api/wc/lineups/[fixtureId] */
+/** A pickable player for a match - served by /api/wc/lineups/[fixtureId] */
 export type LineupPlayer = {
   id:            number          // = api_player_id (stable UI key)
   match_id:      string

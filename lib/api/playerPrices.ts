@@ -1,5 +1,5 @@
 /**
- * playerPrices — resolve Dream11-style credit values for a set of players.
+ * playerPrices - resolve Dream11-style credit values for a set of players.
  * Reads cached prices from player_prices (24h fresh); for any miss, fetches the
  * player's club-season form from API-Football, computes a credit, and upserts
  * it. Bounded concurrency keeps us well under the per-minute API limit, and the
@@ -11,7 +11,7 @@ import { getPlayerSeason } from './apifootball'
 import { creditFromSeason, basePrice, type Pos, type WCForm } from '@/lib/pricing'
 
 const SEASON   = 2025          // most recent completed/current club season
-const FRESH_MS = 6 * 3600 * 1000  // 6h — re-price during a tournament as WC form moves
+const FRESH_MS = 6 * 3600 * 1000  // 6h - re-price during a tournament as WC form moves
 const CHUNK    = 12            // concurrent /players calls per batch
 
 function admin() {
@@ -66,7 +66,7 @@ export async function pricePlayers(
         const stats = await getPlayerSeason(p.id, SEASON)
         return { id: p.id, price: creditFromSeason(stats, p.position, wcForm[p.id]), ok: true }
       } catch {
-        // fall back to any stale cached price, else position base — don't cache it
+        // fall back to any stale cached price, else position base - don't cache it
         return { id: p.id, price: cached[p.id]?.price ?? basePrice(p.position), ok: false }
       }
     }))

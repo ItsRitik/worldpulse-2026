@@ -2,12 +2,12 @@
  * GET /api/wc/team/[teamId]
  *
  * Returns everything for the team page:
- *   team     — { id, name, logo, country, code }
- *   coach    — head coach info (null if unavailable)
- *   squad    — players grouped ready for frontend (raw list sorted by position)
- *   fixtures — all WC 2026 fixtures for this team (sorted by date)
+ *   team     - { id, name, logo, country, code }
+ *   coach    - head coach info (null if unavailable)
+ *   squad    - players grouped ready for frontend (raw list sorted by position)
+ *   fixtures - all WC 2026 fixtures for this team (sorted by date)
  *
- * Cached for 1 hour — squad and coach don't change during the tournament.
+ * Cached for 1 hour - squad and coach don't change during the tournament.
  */
 
 import { NextRequest, NextResponse } from 'next/server'

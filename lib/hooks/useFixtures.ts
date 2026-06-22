@@ -88,7 +88,7 @@ export interface NewsData {
   timestamp: string
 }
 
-/** Live news — auto-refreshes every 5 min */
+/** Live news - auto-refreshes every 5 min */
 export function useNews() {
   const { data, error, isLoading, mutate } = useSWR<NewsData>(
     '/api/news',

@@ -1,7 +1,7 @@
 /**
  * GET /api/wc/fixtures
  *
- * Server-side route — APIFOOTBALL_KEY is never exposed to the client.
+ * Server-side route - APIFOOTBALL_KEY is never exposed to the client.
  *
  * Returns all WC 2026 fixtures sorted:
  *   1. Live matches first (1H, HT, 2H, ET, P)
@@ -11,7 +11,7 @@
  * Also returns fixtures grouped by date (YYYY-MM-DD in local time) and
  * a summary of live/today/total counts.
  *
- * Cached for 60 seconds on the CDN edge — fine for production.
+ * Cached for 60 seconds on the CDN edge - fine for production.
  * During live matches, the client polls every 30s via SWR.
  */
 

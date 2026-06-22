@@ -1,17 +1,17 @@
 /**
- * WC26 Fantasy XI — Scoring Cron Dispatcher
+ * WC26 Fantasy XI - Scoring Cron Dispatcher
  * ==========================================
  * Called by Vercel Cron every minute (see vercel.json).
  *
  * Finds all rooms with status = 'locked' or 'live', extracts the
  * distinct match IDs, and fires /api/scoring/match/[matchId] ONCE
- * per unique match — never once per room. The match scorer fetches
+ * per unique match - never once per room. The match scorer fetches
  * from API-Football once, scores all players, then fans out the
  * results to every room sharing that match. The scoring engine is the
  * ONLY writer to match_player_points, fantasy_live_state and fantasy_rooms.
  *
  * Auth: Vercel Cron passes Authorization: Bearer <CRON_SECRET>.
- * We re-use SCORING_SECRET for simplicity — set the same value in
+ * We re-use SCORING_SECRET for simplicity - set the same value in
  * Vercel Dashboard → Settings → Cron Job Secret.
  */
 
@@ -31,7 +31,7 @@ function adminClient() {
 }
 
 export async function GET(request: NextRequest) {
-  // Vercel Cron auth — Bearer token OR matching x-scoring-secret header
+  // Vercel Cron auth - Bearer token OR matching x-scoring-secret header
   const authHeader = request.headers.get('authorization')
   const secretHeader = request.headers.get('x-scoring-secret')
   const token = authHeader?.replace('Bearer ', '') ?? secretHeader
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   try {
     const db = adminClient()
 
-    // Step 0: lock rooms whose kickoff has passed — without this, real rooms
+    // Step 0: lock rooms whose kickoff has passed - without this, real rooms
     // stay 'waiting' forever and the scorer never picks them up.
     const { error: lockErr } = await db
       .from('fantasy_rooms')
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Fire scoring engine ONCE per match — it fans out to all rooms internally
+    // Fire scoring engine ONCE per match - it fans out to all rooms internally
     const results = await Promise.allSettled(
       uniqueMatchIds.map(matchId =>
         fetch(`${BASE}/api/scoring/match/${matchId}`, {

@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error?.message ?? 'Failed to create room' }, { status: 500 })
   }
 
-  // No member row yet — the host enters the contest by building their team
+  // No member row yet - the host enters the contest by building their team
   // (membership = a submitted 11-player team). host_id marks ownership.
   return NextResponse.json({ roomId: room.id, code: room.room_code })
 }

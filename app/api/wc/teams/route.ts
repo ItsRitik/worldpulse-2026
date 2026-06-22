@@ -2,7 +2,7 @@
  * GET /api/wc/teams
  * ══════════════════
  * All 48 World Cup 2026 teams (id, name, tla, logo) from API-Football.
- * Used by the onboarding favourite-team picker. Cached 24 h — the field is fixed.
+ * Used by the onboarding favourite-team picker. Cached 24 h - the field is fixed.
  */
 
 import { NextResponse } from 'next/server'

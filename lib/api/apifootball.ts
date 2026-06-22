@@ -4,7 +4,7 @@
  * Docs: https://www.api-football.com/documentation-v3
  *
  * Set APIFOOTBALL_KEY in .env.local
- * Free plan: 100 calls/day — plenty for dev.
+ * Free plan: 100 calls/day - plenty for dev.
  * Paid plans from $15/mo for production (unlimited calls on Standard).
  *
  * Used for:
@@ -119,7 +119,7 @@ export type AFWCFixture = {
     penalty:   { home: number | null; away: number | null }
   }
   /**
-   * Match statistics — included by API-Football in /fixtures?id=X response
+   * Match statistics - included by API-Football in /fixtures?id=X response
    * for live and finished matches. Absent (undefined) for upcoming matches.
    */
   statistics?: Array<{
@@ -299,7 +299,7 @@ export async function getLineups(fixtureId: number): Promise<AFLineup[]> {
 
 /**
  * Get player statistics for a fixture.
- * Available at half-time and full-time — includes minutes played, saves, etc.
+ * Available at half-time and full-time - includes minutes played, saves, etc.
  * Used to supplement event-based scoring (e.g. clean sheet, GK saves).
  */
 export async function getPlayerStats(fixtureId: number): Promise<{ team: { id: number }; players: AFPlayerStat[] }[]> {
@@ -377,7 +377,7 @@ export type AFWCForm = { minutes: number; goals: number; assists: number; rating
 /**
  * Get every player's WC-2026 tournament form for a team, keyed by player id.
  * Endpoint: /players?team=TEAM_ID&season=2026&league=1 (paginated, 20/page).
- * One call per team (a few pages at most) — cached 30 min. Cheap vs. per-player.
+ * One call per team (a few pages at most) - cached 30 min. Cheap vs. per-player.
  */
 export async function getTeamWCForm(teamId: number): Promise<Record<number, AFWCForm>> {
   const out: Record<number, AFWCForm> = {}
@@ -405,12 +405,12 @@ export async function getTeamWCForm(teamId: number): Promise<Record<number, AFWC
 }
 
 /**
- * Get the squad for a team (returns players without per-season stats — faster).
+ * Get the squad for a team (returns players without per-season stats - faster).
  * Endpoint: /players/squads?team=TEAM_ID
  */
 export async function getTeamSquad(teamId: number): Promise<AFSquadPlayer[]> {
   const data = await get<Array<{ team: { id: number }; players: AFSquadPlayer[] }>>(
-    '/players/squads', { team: teamId }, 3600,   // squads barely change — cache 1h
+    '/players/squads', { team: teamId }, 3600,   // squads barely change - cache 1h
   )
   return data[0]?.players ?? []
 }
@@ -435,7 +435,7 @@ export async function getTeamWCFixtures(teamId: number): Promise<AFWCFixture[]> 
 /**
  * Get ALL FIFA World Cup 2026 fixtures (league=1, season=2026).
  * Returns the full fixture list with venue, referee, round, score.
- * Use server-side only — protects APIFOOTBALL_KEY.
+ * Use server-side only - protects APIFOOTBALL_KEY.
  *
  * API-Football free plan: 100 calls/day, so cache this liberally.
  */
@@ -460,7 +460,7 @@ export const THIRD_PLACE_GROUP = 'Best 3rd placed teams'
  *
  * API-Football returns 13 tables for WC 2026:
  *   "Group Stage - Group A" … "Group Stage - Group L"  (4 teams each)
- *   "Group Stage"                                       (12 teams — the
+ *   "Group Stage"                                       (12 teams - the
  *    third-place ranking; the best 8 advance to the Round of 32)
  *
  * We normalise names to "Group A" … "Group L" + THIRD_PLACE_GROUP and order

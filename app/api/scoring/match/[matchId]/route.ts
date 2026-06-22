@@ -7,7 +7,7 @@
  * ONE call per match, regardless of how many rooms are playing it.
  *
  * Flow:
- *  1. Fetch live events + player stats from API-Football         (1–2 API calls)
+ *  1. Fetch live events + player stats from API-Football         (1-2 API calls)
  *  2. Run the pure scoring engine → Map<playerId, PlayerScore>
  *  3. Upsert match_player_points (one row per player)            (1 DB upsert)
  *  4. Find all rooms using this match with status 'live'         (1 DB query)
@@ -25,7 +25,7 @@ import { scoreMatch, applyMultiplier }                  from '@/lib/scoring/engi
 import { teamTla }                                      from '@/lib/api/tla'
 import type { FantasyPick }                             from '@/lib/supabase/types'
 
-// Admin Supabase client — bypasses RLS so we can write to restricted tables
+// Admin Supabase client - bypasses RLS so we can write to restricted tables
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -157,7 +157,7 @@ export async function POST(
     }
 
     // ── Step 3: Upsert match_player_points ───────────────────────────────────
-    // One row per player — overwrite on every tick
+    // One row per player - overwrite on every tick
     if (playerScores.size > 0) {
       const mppRows = Array.from(playerScores.values()).map(ps => ({
         match_id:      String(fixtureId),
@@ -285,7 +285,7 @@ export async function POST(
       matchId,
       matchStatus,
       matchMinute,
-      score:          `${homeScore}–${awayScore}`,
+      score:          `${homeScore}-${awayScore}`,
       playersScored:  playerScores.size,
       roomsUpdated:   rooms.length,
       roomsFlippedLive:     roomStatusUpdates.filter(r => r.status === 'live').length,

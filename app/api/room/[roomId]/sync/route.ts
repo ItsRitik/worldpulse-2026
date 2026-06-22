@@ -11,7 +11,7 @@
  *   3. otherwise runs the normal match scorer (server-side, with the secret),
  *      which scores players, flips locked → live, and on FT writes the winner.
  *
- * No client secret needed — the action only triggers scoring of a real match
+ * No client secret needed - the action only triggers scoring of a real match
  * and is idempotent. The heavy lifting still lives in /api/scoring/match/[id].
  */
 
@@ -51,7 +51,7 @@ export async function POST(
     return NextResponse.json({ ok: true, status: room.status, scored: false })
   }
 
-  // Match hasn't kicked off yet — stay waiting
+  // Match hasn't kicked off yet - stay waiting
   if (new Date(room.kickoff_at).getTime() > Date.now()) {
     return NextResponse.json({ ok: true, status: room.status, scored: false, reason: 'not_kicked_off' })
   }
@@ -66,7 +66,7 @@ export async function POST(
     await db.from('fantasy_rooms').update({ status: 'locked' }).eq('id', room.id)
   }
 
-  // 2. Throttle — if any room on this match was scored very recently, skip the API hit
+  // 2. Throttle - if any room on this match was scored very recently, skip the API hit
   const { data: recent } = await db
     .from('fantasy_live_state')
     .select('updated_at')

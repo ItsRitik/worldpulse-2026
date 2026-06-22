@@ -2,10 +2,10 @@
  * GET /api/wc/match/[fixtureId]
  *
  * Returns everything needed for the match detail page in one call:
- *   fixture  — full WC fixture (venue, referee, score, status)
- *   lineups  — starting XI + bench for both teams (empty [] if not announced yet)
- *   prediction — win/draw/loss % + comparison + H2H (null if unavailable)
- *   events   — goals, cards, subs (empty [] pre-kickoff)
+ *   fixture  - full WC fixture (venue, referee, score, status)
+ *   lineups  - starting XI + bench for both teams (empty [] if not announced yet)
+ *   prediction - win/draw/loss % + comparison + H2H (null if unavailable)
+ *   events   - goals, cards, subs (empty [] pre-kickoff)
  *
  * All sub-calls run in parallel. Any single failure degrades gracefully.
  *
@@ -30,7 +30,7 @@ export async function GET(
   const id = parseInt(params.fixtureId, 10)
   if (isNaN(id)) return NextResponse.json({ error: 'Invalid fixture ID' }, { status: 400 })
 
-  // Parallel fetch — individual failures return null/[]
+  // Parallel fetch - individual failures return null/[]
   const [fixture, lineups, prediction, events] = await Promise.allSettled([
     getWCFixture(id),
     getLineups(id),

@@ -1,9 +1,9 @@
 /**
  * GET /api/wc/standings
  *
- * Server-side route — APIFOOTBALL_KEY stays server-only.
+ * Server-side route - APIFOOTBALL_KEY stays server-only.
  *
- * Returns all WC 2026 group standings (Groups A–H), each with:
+ * Returns all WC 2026 group standings (Groups A-H), each with:
  *   - group name
  *   - table: [ { rank, team, points, goalsDiff, all, home, away, form } ]
  *

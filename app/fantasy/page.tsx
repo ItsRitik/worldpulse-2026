@@ -95,7 +95,7 @@ function MyRoomCard({
   // Derive a short "what to do" hint
   let hint = ''
   if (room.status === 'waiting') {
-    hint = myDone ? 'Team ready — invite more managers' : 'Build your team →'
+    hint = myDone ? 'Team ready - invite more managers' : 'Build your team →'
   } else if (room.status === 'locked') hint = 'Picks locked · match starting soon'
   else if (room.status === 'live')     hint = 'Leaderboard is live →'
   else if (room.status === 'finished') {
@@ -205,7 +205,7 @@ function InlineRoomRow({ room, userId }: { room: FantasyRoom; userId: string }) 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Real fixture cards — WC + Friendly matches from API
+// Real fixture cards - WC + Friendly matches from API
 // ─────────────────────────────────────────────────────────────────────────────
 
 const fetcher = async (url: string) => {
@@ -260,7 +260,7 @@ function RealFixtureCard({
 
   const kickoff = new Date(f.fixture.date)
   const diffH   = (kickoff.getTime() - Date.now()) / 3_600_000
-  // Rooms can only be created before kickoff — picks lock when the match starts,
+  // Rooms can only be created before kickoff - picks lock when the match starts,
   // so creating a room for a live match would be an immediate dead-end.
   const canCreate = f.fixture.status.short === 'NS' && diffH > 0
 
@@ -317,7 +317,7 @@ function RealFixtureCard({
           <div className="px-3 text-center flex-shrink-0">
             {isLive ? (
               <div className="text-lg font-black text-gray-800 dark:text-gray-200 tabular-nums">
-                {f.goals.home ?? 0} – {f.goals.away ?? 0}
+                {f.goals.home ?? 0} - {f.goals.away ?? 0}
               </div>
             ) : (
               <div className="text-lg font-black text-gray-300 dark:text-gray-600">VS</div>
@@ -346,11 +346,11 @@ function RealFixtureCard({
           </Link>
         ) : (
           <span className="w-full flex items-center justify-center text-xs text-gray-400 h-9">
-            {isLive ? 'Match started — rooms closed' : 'Not available'}
+            {isLive ? 'Match started - rooms closed' : 'Not available'}
           </span>
         )}
 
-        {/* Live player points — top 3, updates every minute */}
+        {/* Live player points - top 3, updates every minute */}
         {isLive && <LiveTopPoints fixtureId={f.fixture.id} />}
 
         {/* Existing rooms for this match */}
@@ -376,7 +376,7 @@ function AuthenticatedLobby({ userId }: { userId: string }) {
   const [pickCounts,setPickCounts]= useState<Record<string, number>>({})
   const [loading,   setLoading]   = useState(true)
 
-  // Manager name — prompt once until set
+  // Manager name - prompt once until set
   const [displayName, setDisplayName] = useState<string | null | undefined>(undefined)
   useEffect(() => {
     fetch('/api/profile')
@@ -515,7 +515,7 @@ function AuthenticatedLobby({ userId }: { userId: string }) {
             </div>
           ) : (
             <div className="space-y-5">
-              {/* Active — waiting / locked / live */}
+              {/* Active - waiting / locked / live */}
               {activeRooms.length > 0 ? (
                 <section>
                   <h2 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
@@ -531,7 +531,7 @@ function AuthenticatedLobby({ userId }: { userId: string }) {
                   ))}
                 </section>
               ) : finishedRooms.length > 0 ? (
-                // Have completed rooms but nothing active — nudge to create
+                // Have completed rooms but nothing active - nudge to create
                 <div className="bg-pulse-50 dark:bg-pulse-900/20 rounded-2xl border border-pulse-100 dark:border-pulse-800/40 px-4 py-4 flex items-center gap-3">
                   <span className="text-2xl">⚽</span>
                   <div className="flex-1 min-w-0">
@@ -547,7 +547,7 @@ function AuthenticatedLobby({ userId }: { userId: string }) {
                 </div>
               ) : null}
 
-              {/* Completed — results */}
+              {/* Completed - results */}
               {finishedRooms.length > 0 && (
                 <section>
                   <h2 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">Completed</h2>

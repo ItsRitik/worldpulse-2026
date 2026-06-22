@@ -1,4 +1,4 @@
-// WC26 Fantasy XI — Supabase Database Types
+// WC26 Fantasy XI - Supabase Database Types
 // Matches supabase/schema.sql exactly.
 // Run `npx supabase gen types typescript --project-id hggskmhczggjtxfubacl > lib/supabase/types.ts`
 // to regenerate after schema changes.
@@ -11,7 +11,7 @@ export type RoomStatus = 'waiting' | 'locked' | 'live' | 'finished' | 'cancelled
 // ── Entity types ──────────────────────────────────────────────────────────────
 
 export type UserProfile = {
-  id:            string          // uuid — same as auth.users.id
+  id:            string          // uuid - same as auth.users.id
   display_name:  string | null
   fav_team_tla:  string | null   // 3-letter code e.g. 'BRA'
   phone:         string | null
@@ -28,7 +28,7 @@ export type FantasyRoom = {
   away_team_tla:  string
   kickoff_at:     string          // ISO datetime
   lock_at:        string          // = kickoff
-  host_id:        string          // creator — auth.users.id
+  host_id:        string          // creator - auth.users.id
   guest_id:       string | null   // legacy (1v1)
   room_code:      string          // short join code, e.g. "GHX7Q2"
   max_players:    number          // capacity (default 100)
@@ -54,7 +54,7 @@ export type FantasyPick = {
   id:             number
   room_id:        string
   user_id:        string
-  // Player snapshot — stored inline, no FK to a players table
+  // Player snapshot - stored inline, no FK to a players table
   api_player_id:  number
   player_name:    string
   player_short:   string

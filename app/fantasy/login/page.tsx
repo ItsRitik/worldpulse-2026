@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { SignIn } from '@clerk/nextjs'
 
 /**
- * Login — Clerk's prebuilt sign-in. Email code + (any social providers you
+ * Login - Clerk's prebuilt sign-in. Email code + (any social providers you
  * enable in the Clerk dashboard) work out of the box, no template wrangling.
  * `routing="hash"` keeps it on this single route (no catch-all needed).
  */

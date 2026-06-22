@@ -78,14 +78,14 @@ function MatchHeader({ data }: { data: MatchData }) {
   const isFinished = FINISHED_STATUSES.has(fixture.status.short)
   const showScore  = isLive || isFinished
 
-  // Goal scorers per team — own goals credit the OTHER team, like every scoreboard
+  // Goal scorers per team - own goals credit the OTHER team, like every scoreboard
   type Scorer = { name: string; minutes: string[]; og: boolean; pen: boolean }
   const scorers: { home: Scorer[]; away: Scorer[] } = { home: [], away: [] }
   if (showScore) {
     for (const e of data.events ?? []) {
       if (e.type !== 'Goal' || e.detail === 'Missed Penalty' || !e.player?.name) continue
       const isOG = e.detail === 'Own Goal'
-      // API-Football already credits own-goal events to the benefiting team —
+      // API-Football already credits own-goal events to the benefiting team -
       // e.team IS the goal-scoring team in all cases, no flipping needed.
       const side = e.team.id === teams.home.id ? scorers.home : scorers.away
       const minute = `${e.time.elapsed}${e.time.extra ? `+${e.time.extra}` : ''}'`
@@ -159,7 +159,7 @@ function MatchHeader({ data }: { data: MatchData }) {
               isLive ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
             )}>
               <span>{ft.home ?? 0}</span>
-              <span className="text-lg font-light opacity-40">–</span>
+              <span className="text-lg font-light opacity-40">-</span>
               <span>{ft.away ?? 0}</span>
             </div>
           ) : (
@@ -221,7 +221,7 @@ function MatchHeader({ data }: { data: MatchData }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Stats tab — Win Probability bar (matches the screenshot design)
+// Stats tab - Win Probability bar (matches the screenshot design)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function H2HSection({ h2h }: { h2h: AFPrediction['h2h'] }) {
@@ -233,7 +233,7 @@ function H2HSection({ h2h }: { h2h: AFPrediction['h2h'] }) {
       </p>
       <div className="space-y-2">
         {h2h.slice(0, 5).map((m, i) => {
-          // H2H are historical finished matches — score.fulltime is reliable here
+          // H2H are historical finished matches - score.fulltime is reliable here
           const ftScore = m.score?.fulltime
           const ft      = (ftScore?.home != null || ftScore?.away != null) ? ftScore : m.goals
           const homeWin = m.teams.home.winner === true
@@ -245,7 +245,7 @@ function H2HSection({ h2h }: { h2h: AFPrediction['h2h'] }) {
                 {m.teams.home.name}
               </span>
               <span className="font-mono font-bold text-gray-700 dark:text-gray-300 flex-shrink-0 tabular-nums px-2">
-                {ft.home ?? 0}–{ft.away ?? 0}
+                {ft.home ?? 0}-{ft.away ?? 0}
               </span>
               <span className={clsx('flex-1 truncate', awayWin ? 'font-bold text-gray-800 dark:text-gray-200' : 'text-gray-500 dark:text-gray-400')}>
                 {m.teams.away.name}
@@ -259,7 +259,7 @@ function H2HSection({ h2h }: { h2h: AFPrediction['h2h'] }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Group standings table (lazy — only fetches when Stats tab is open)
+// Group standings table (lazy - only fetches when Stats tab is open)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function GroupTableSection({ data }: { data: MatchData }) {
@@ -277,7 +277,7 @@ function GroupTableSection({ data }: { data: MatchData }) {
   const homeId = fixture.teams.home.id
   const awayId = fixture.teams.away.id
 
-  // Only the team's real group (A–L) — never the third-place ranking table
+  // Only the team's real group (A-L) - never the third-place ranking table
   const group = sd.standings.find(g =>
     /^Group [A-Z]$/.test(g.group) &&
     g.table.some(r => r.team.id === homeId || r.team.id === awayId)
@@ -333,7 +333,7 @@ function GroupTableSection({ data }: { data: MatchData }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Match statistics — head-to-head bars (live & finished matches)
+// Match statistics - head-to-head bars (live & finished matches)
 // Reads from data.fixture.statistics which API-Football includes in /fixtures?id=X
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -440,7 +440,7 @@ function StatsTab({ data }: { data: MatchData }) {
   return (
     <div className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
 
-      {/* ── Live/post-match stats — the "main thing in between" ── */}
+      {/* ── Live/post-match stats - the "main thing in between" ── */}
       {hasMatchStats && (
         <MatchStatsSection fixture={fixture} homeName={homeName} awayName={awayName} />
       )}
@@ -450,7 +450,7 @@ function StatsTab({ data }: { data: MatchData }) {
         <H2HSection h2h={prediction.h2h} />
       )}
 
-      {/* ── Empty state — nothing to show before kickoff ── */}
+      {/* ── Empty state - nothing to show before kickoff ── */}
       {!hasMatchStats && (!prediction?.h2h || prediction.h2h.length === 0) && (
         <div className="py-10 text-center px-4">
           <p className="text-3xl mb-3">📊</p>
@@ -466,7 +466,7 @@ function StatsTab({ data }: { data: MatchData }) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
-// Substitutes list — below the pitch, not on it
+// Substitutes list - below the pitch, not on it
 // ─────────────────────────────────────────────────────────────────────────────
 
 function SubRow({ p, onMin, forName, badges }: {
@@ -484,7 +484,7 @@ function SubRow({ p, onMin, forName, badges }: {
         className="w-6 h-6 rounded-full object-cover bg-gray-100 dark:bg-gray-800 flex-shrink-0"
         onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }}
       />
-      <span className="text-[10px] text-gray-400 w-5 tabular-nums flex-shrink-0">{p.player.number ?? '–'}</span>
+      <span className="text-[10px] text-gray-400 w-5 tabular-nums flex-shrink-0">{p.player.number ?? '-'}</span>
       <div className="min-w-0 flex-1">
         <span className="text-xs text-gray-700 dark:text-gray-300 truncate block">{p.player.name}</span>
         {forName && (
@@ -492,7 +492,7 @@ function SubRow({ p, onMin, forName, badges }: {
         )}
       </div>
 
-      {/* Match events after coming on — goals, cards, subbed off again */}
+      {/* Match events after coming on - goals, cards, subbed off again */}
       {badges && (
         <span className="flex items-center gap-1 flex-shrink-0">
           {(badges.goals > 0 || badges.ownGoals > 0) && (
@@ -587,7 +587,7 @@ function SubsList({ home, away, events, badges }: { home: AFLineup; away: AFLine
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lineups tab — formation pitch + bench
+// Lineups tab - formation pitch + bench
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Per-player match events shown as badges on the pitch token */
@@ -604,7 +604,7 @@ function PlayerToken({
 }: { player: AFLineupPlayer['player']; badges?: TokenBadges }) {
   const [imgErr, setImgErr] = useState(false)
 
-  // Photo URL is always predictable from player ID — don't rely on the field being returned
+  // Photo URL is always predictable from player ID - don't rely on the field being returned
   const photoUrl = `https://media.api-sports.io/football/players/${player.id}.png`
 
   return (
@@ -758,7 +758,7 @@ function LineupsTab({ data }: { data: MatchData }) {
           </p>
           <p className="text-xs text-gray-400 leading-relaxed max-w-xs mx-auto">
             {isLive || isFinished
-              ? 'Lineup details could not be retrieved — match events are shown above'
+              ? 'Lineup details could not be retrieved - match events are shown above'
               : 'Teams usually announce their starting XI around 1 hour before kickoff'}
           </p>
         </div>
@@ -776,7 +776,7 @@ function LineupsTab({ data }: { data: MatchData }) {
         className="relative mx-4 my-4 rounded-2xl overflow-hidden"
         style={{ background: 'linear-gradient(180deg, #2d6a4f 0%, #1b4332 100%)' }}
       >
-        {/* Pitch markings — penalty boxes only; halfway line is in-flow below */}
+        {/* Pitch markings - penalty boxes only; halfway line is in-flow below */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute left-1/4 right-1/4 bottom-0 h-12 border-t border-x border-white/20 rounded-t-sm" />
           <div className="absolute left-1/4 right-1/4 top-0 h-12 border-b border-x border-white/20 rounded-b-sm" />
@@ -784,19 +784,19 @@ function LineupsTab({ data }: { data: MatchData }) {
 
         {/* Teams + formations */}
         <div className="relative z-10 flex flex-col px-2 py-3">
-          {/* Away — attacking downward */}
+          {/* Away - attacking downward */}
           <div className="pb-3">
             <TeamLineup lineup={away} isHome={false} badges={badges} />
           </div>
 
-          {/* Halfway line + centre circle — always exactly between the teams */}
+          {/* Halfway line + centre circle - always exactly between the teams */}
           <div className="relative h-12 my-1 flex-shrink-0 pointer-events-none">
             <div className="absolute left-2 right-2 top-1/2 h-px bg-white/25" />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-white/25" />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/40" />
           </div>
 
-          {/* Home — attacking upward */}
+          {/* Home - attacking upward */}
           <div className="pt-3">
             <TeamLineup lineup={home} isHome={true} badges={badges} />
           </div>
@@ -804,14 +804,14 @@ function LineupsTab({ data }: { data: MatchData }) {
 
       </div>
 
-      {/* Substitutes — list below the pitch, ordered by entry time */}
+      {/* Substitutes - list below the pitch, ordered by entry time */}
       <SubsList home={home} away={away} events={events ?? []} badges={badges} />
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// News tab — filters /api/news by both team name keywords
+// News tab - filters /api/news by both team name keywords
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface NewsItem {

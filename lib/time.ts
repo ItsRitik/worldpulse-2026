@@ -1,7 +1,7 @@
 /**
  * Local-timezone date helpers.
  * All fixture grouping/"today" logic must use the VIEWER's local date, not
- * the UTC date — a 19:00 UTC match is "tomorrow" for someone at UTC+5:30.
+ * the UTC date - a 19:00 UTC match is "tomorrow" for someone at UTC+5:30.
  */
 
 /** YYYY-MM-DD key in the user's local timezone */

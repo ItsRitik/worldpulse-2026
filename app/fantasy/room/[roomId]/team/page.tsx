@@ -3,9 +3,9 @@
 /**
  * /fantasy/room/[roomId]/team
  * ════════════════════════════
- * Football pitch view of a submitted team — Dream11 style.
+ * Football pitch view of a submitted team - Dream11 style.
  *
- * ?user=<userId>  — whose team to show (defaults to current user)
+ * ?user=<userId>  - whose team to show (defaults to current user)
  *
  * Access rules:
  *  - Own team:      always visible (if picks exist)
@@ -147,10 +147,10 @@ function PitchLines() {
       <rect x="112" y="490" width="96" height="38" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.2"/>
       {/* Bottom penalty spot */}
       <circle cx="160" cy="464" r="2.5" fill="white" fillOpacity="0.25"/>
-      {/* Corner arcs — top */}
+      {/* Corner arcs - top */}
       <path d="M12 30 Q20 12 30 12"  fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.2"/>
       <path d="M290 12 Q308 12 308 30" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.2"/>
-      {/* Corner arcs — bottom */}
+      {/* Corner arcs - bottom */}
       <path d="M12 510 Q12 528 30 528" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.2"/>
       <path d="M308 510 Q308 528 290 528" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.2"/>
     </svg>
@@ -173,14 +173,14 @@ function TeamSummary({ picks, showPoints }: { picks: FantasyPick[]; showPoints: 
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-yellow-400 text-yellow-900 text-[9px] font-black flex items-center justify-center">C</span>
               <span className="text-white font-medium truncate max-w-[80px]">
-                {captain?.player_short ?? '—'}
+                {captain?.player_short ?? '-'}
               </span>
             </div>
             {/* VC */}
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-blue-400 text-blue-900 text-[9px] font-black flex items-center justify-center">V</span>
               <span className="text-white font-medium truncate max-w-[80px]">
-                {vc?.player_short ?? '—'}
+                {vc?.player_short ?? '-'}
               </span>
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function TeamViewPage({ params }: { params: { roomId: string } })
 
       if (!isParticipant) { setError('You are not in this room'); setLoading(false); return }
 
-      // 2. Opponent team guard — only visible once match starts
+      // 2. Opponent team guard - only visible once match starts
       if (!isMyTeam) {
         const allowed = r.status === 'live' || r.status === 'finished'
         if (!allowed) {
@@ -383,7 +383,7 @@ export default function TeamViewPage({ params }: { params: { roomId: string } })
         {/* Pitch line markings */}
         <PitchLines />
 
-        {/* Players — laid out in rows */}
+        {/* Players - laid out in rows */}
         <div className="relative z-10 flex flex-col justify-around h-full py-6 px-3">
           {rows.map(row => (
             <PitchRow

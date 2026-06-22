@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useAuth — thin adapter over Clerk that keeps the app's existing shape
+ * useAuth - thin adapter over Clerk that keeps the app's existing shape
  * ({ user: { id, email }, loading, signOut }). Auth is Clerk; the database
  * stays on Supabase and is written only via Clerk-authenticated API routes.
  */
@@ -27,7 +27,7 @@ export function useAuth() {
 
   // Memoise so `user` keeps a STABLE reference across renders. Without this,
   // a fresh object every render makes any `useEffect(..., [user])` re-fire on
-  // every keystroke/click — which was hammering /api/wc/lineups past the rate
+  // every keystroke/click - which was hammering /api/wc/lineups past the rate
   // limit while building a team.
   const authUser: AuthUser | null = useMemo(
     () => (id ? { id, email, user_metadata: { full_name: name, avatar_url: avatar } } : null),

@@ -5,7 +5,7 @@
  * same shape the pick page uses for dummy matches (LineupPlayer).
  *
  * Source priority:
- *   1. Confirmed lineups (startXI + bench) — available ~1 h before kickoff.
+ *   1. Confirmed lineups (startXI + bench) - available ~1 h before kickoff.
  *      Starters get a small price premium so budget choices matter.
  *   2. Fallback: full squads of both teams (/players/squads) so users can
  *      pre-build a team before the XI is announced.
@@ -161,7 +161,7 @@ export async function GET(
 
     if (players.length === 0) {
       return NextResponse.json(
-        { error: 'No player data available for this match yet — try again closer to kickoff' },
+        { error: 'No player data available for this match yet - try again closer to kickoff' },
         { status: 404 },
       )
     }

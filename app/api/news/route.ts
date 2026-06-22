@@ -31,7 +31,7 @@ const FEEDS = [
   },
 ]
 
-// World Cup 2026 keywords — item must match at least one
+// World Cup 2026 keywords - item must match at least one
 const WC_KEYWORDS = [
   'world cup', 'worldcup', 'fifa', 'wc2026', 'wc 2026',
   'world cup 2026', 'copa del mundo',
@@ -77,8 +77,8 @@ function decodeEntities(s: string): string {
     .replace(/&quot;/gi, '"')
     .replace(/&apos;/gi, "'")
     .replace(/&hellip;/gi, '…')
-    .replace(/&mdash;/gi, '—')
-    .replace(/&ndash;/gi, '–')
+    .replace(/&mdash;/gi, '-')
+    .replace(/&ndash;/gi, '-')
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/&amp;/gi, '&')   // last, so &amp;lt; → &lt; → < on the next pass
@@ -87,7 +87,7 @@ function decodeEntities(s: string): string {
 function cleanHtml(s: string): string {
   let t = s
   // Two passes handle feeds (e.g. Guardian) that double-encode their HTML:
-  // decode entities, strip tags, repeat — then collapse whitespace.
+  // decode entities, strip tags, repeat - then collapse whitespace.
   for (let i = 0; i < 2; i++) {
     t = decodeEntities(t).replace(/<[^>]+>/g, ' ')
   }

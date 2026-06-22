@@ -1,7 +1,7 @@
 /**
  * GET /api/wc/predictions/[fixtureId]
  *
- * Lazy-loaded server route — only called when user expands an upcoming fixture card.
+ * Lazy-loaded server route - only called when user expands an upcoming fixture card.
  * Predictions don't change often, so we cache aggressively (1 hour).
  * APIFOOTBALL_KEY stays server-side only.
  */
@@ -32,7 +32,7 @@ export async function GET(
       { prediction, timestamp: new Date().toISOString() },
       {
         headers: {
-          // Predictions are stable — cache for 1 hour on CDN, serve stale for up to 30 min more
+          // Predictions are stable - cache for 1 hour on CDN, serve stale for up to 30 min more
           'Cache-Control': 's-maxage=3600, stale-while-revalidate=1800',
         },
       }

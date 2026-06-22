@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
   if (!NAME_RE.test(name)) {
     return NextResponse.json(
-      { error: '3–16 characters: letters, numbers, spaces, _ . -' },
+      { error: '3-16 characters: letters, numbers, spaces, _ . -' },
       { status: 400 },
     )
   }
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
   const db = adminClient()
 
-  // Uniqueness — case-insensitive, excluding the caller's own row
+  // Uniqueness - case-insensitive, excluding the caller's own row
   const { data: clash } = await db
     .from('user_profiles')
     .select('id')

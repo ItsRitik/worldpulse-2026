@@ -21,17 +21,17 @@ type ScoringRow = {
 const ROWS: ScoringRow[] = [
   // ── Attack ────────────────────────────────────────────────────────────────
   {
-    icon: '⚽', label: 'Goal — Striker (FWD)', pts: '+40', cat: 'attack',
+    icon: '⚽', label: 'Goal - Striker (FWD)', pts: '+40', cat: 'attack',
     position: 'FWD',
   },
   {
-    icon: '⚽', label: 'Goal — Midfielder (MID)', pts: '+50', cat: 'attack',
+    icon: '⚽', label: 'Goal - Midfielder (MID)', pts: '+50', cat: 'attack',
     position: 'MID',
   },
   {
-    icon: '⚽', label: 'Goal — Defender / GK', pts: '+60', cat: 'attack',
+    icon: '⚽', label: 'Goal - Defender / GK', pts: '+60', cat: 'attack',
     position: 'DEF · GK',
-    note: 'Defenders and keepers score more for goals — reward the unexpected.',
+    note: 'Defenders and keepers score more for goals - reward the unexpected.',
   },
   {
     icon: '🎯', label: 'Assist', pts: '+20', cat: 'attack',
@@ -40,7 +40,7 @@ const ROWS: ScoringRow[] = [
   {
     icon: '👟', label: 'Shot on Target', pts: '+6', cat: 'attack',
     position: 'All',
-    note: 'Goals count as shots on target — scorer earns both the goal bonus and +6.',
+    note: 'Goals count as shots on target - scorer earns both the goal bonus and +6.',
   },
   {
     icon: '🔑', label: 'Chance Created (key pass)', pts: '+3', cat: 'attack',
@@ -93,7 +93,7 @@ const ROWS: ScoringRow[] = [
   {
     icon: '🟨', label: 'Yellow card', pts: '−4', cat: 'negative',
     position: 'All',
-    note: 'If a player receives a second yellow (leading to a red), only the −10 red card penalty applies — not −4 as well.',
+    note: 'If a player receives a second yellow (leading to a red), only the −10 red card penalty applies - not −4 as well.',
   },
   {
     icon: '🟥', label: 'Red card', pts: '−10', cat: 'negative',
@@ -125,9 +125,9 @@ const CATEGORIES: { id: Category; label: string; color: string; bg: string; bord
 
 const IMPORTANT_RULES = [
   'Any event during extra time counts for points. Penalty shootout events do NOT count.',
-  'A player who does not play at all receives no points — including no negative points for off-field cards.',
+  'A player who does not play at all receives no points - including no negative points for off-field cards.',
   'If a player earns an Assist, they will NOT additionally earn Chance Created points for that same touch.',
-  'If the penalty taker themselves wins the penalty and also scores it, they earn the Goal points only — no Assist.',
+  'If the penalty taker themselves wins the penalty and also scores it, they earn the Goal points only - no Assist.',
   'Once a match is marked Complete and winners are declared, no further point adjustments are made.',
   'Points for live matches are subject to change while the match status is "In Progress" or "In Review".',
   'Stats are sourced from Opta. In case of a clear data error, points may be manually corrected.',
@@ -169,7 +169,7 @@ export default function ScoringPage() {
             <div>
               <h1 className="text-xl font-bold tracking-tight">Points System</h1>
               <p className="text-sm text-white/70 mt-1 leading-relaxed">
-                Every goal, tackle, and save earns or costs your team points —
+                Every goal, tackle, and save earns or costs your team points -
                 updated live every few minutes during a match.
               </p>
             </div>
@@ -216,7 +216,7 @@ export default function ScoringPage() {
 
         {/* Example calc */}
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 rounded-2xl px-4 py-4">
-          <p className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">Captain example — Messi scores + assists</p>
+          <p className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">Captain example - Messi scores + assists</p>
           <div className="space-y-1.5">
             {[
               { label: 'Goal (FWD)',             pts: '+40' },
@@ -335,9 +335,9 @@ export default function ScoringPage() {
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black/[0.07] dark:border-white/[0.07] overflow-hidden divide-y divide-black/[0.04] dark:divide-white/[0.04]">
             {[
               { icon: '🥅', label: 'Goalkeeper',            value: 'Exactly 1',    note: 'GK' },
-              { icon: '🛡️', label: 'Defenders',             value: '3 – 5',        note: 'DEF' },
-              { icon: '⚙️', label: 'Midfielders',           value: '3 – 5',        note: 'MID' },
-              { icon: '⚡', label: 'Forwards',              value: '1 – 3',        note: 'FWD' },
+              { icon: '🛡️', label: 'Defenders',             value: '3 - 5',        note: 'DEF' },
+              { icon: '⚙️', label: 'Midfielders',           value: '3 - 5',        note: 'MID' },
+              { icon: '⚡', label: 'Forwards',              value: '1 - 3',        note: 'FWD' },
               { icon: '👥', label: 'Total players',         value: '11',           note: '' },
               { icon: '💰', label: 'Budget',                value: '≤ 100 credits',note: '' },
               { icon: '🏳️', label: 'Max from one team',    value: '7 players',    note: '' },

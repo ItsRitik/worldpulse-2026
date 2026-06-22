@@ -2,7 +2,7 @@
  * POST /api/room/join
  * ════════════════════
  * Resolve a contest by short code (or roomId) and validate it can be entered.
- * Does NOT add a member — you enter by building a team (see the picks route).
+ * Does NOT add a member - you enter by building a team (see the picks route).
  * This just gets the caller to the right room with a clear early error.
  *
  * Body: { code } | { roomId }
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
   // Early, friendly errors before navigating
   if (room.status !== 'waiting' || new Date(room.kickoff_at).getTime() <= Date.now()) {
-    return NextResponse.json({ error: 'Entries are closed — that match has started.' }, { status: 409 })
+    return NextResponse.json({ error: 'Entries are closed - that match has started.' }, { status: 409 })
   }
   if (room.host_id !== uid) {
     const { count } = await db
@@ -58,6 +58,6 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Resolved + enterable — the room page will prompt "build your team to enter"
+  // Resolved + enterable - the room page will prompt "build your team to enter"
   return NextResponse.json({ roomId: room.id, entered: false })
 }

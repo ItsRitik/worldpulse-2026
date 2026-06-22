@@ -1,10 +1,10 @@
 /**
- * POST /api/room/[roomId]/picks  — submit/replace a team (this IS how you enter)
+ * POST /api/room/[roomId]/picks  - submit/replace a team (this IS how you enter)
  * ════════════════════════════════════════════════════════════════════════════
  * Building a full 11-player team is what enters a manager into the contest.
  * On save we (atomically-ish): validate the squad, enforce capacity for new
  * entrants, write the picks, and upsert the fantasy_room_members entry. There
- * is no separate "join" — a member row only ever exists with a real team, so
+ * is no separate "join" - a member row only ever exists with a real team, so
  * the leaderboard can never show a teamless 0-point "winner".
  *
  * Clerk-authenticated; writes via the service role. Guards return clear errors.
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params }: { params: { roomId: str
     .from('fantasy_rooms').select('status, kickoff_at, host_id, max_players').eq('id', roomId).maybeSingle()
   if (!room) return NextResponse.json({ error: 'Contest not found.' }, { status: 404 })
   if (room.status !== 'waiting' || new Date(room.kickoff_at).getTime() <= Date.now()) {
-    return NextResponse.json({ error: 'Entries are closed — the match has started.' }, { status: 409 })
+    return NextResponse.json({ error: 'Entries are closed - the match has started.' }, { status: 409 })
   }
 
   // ── Capacity (only for NEW entrants; host is always allowed in own room) ──

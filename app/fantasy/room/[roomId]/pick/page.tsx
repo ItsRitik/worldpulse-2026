@@ -162,7 +162,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   const [saving,     setSaving]     = useState(false)
   const [saveError,  setSaveError]  = useState<string | null>(null)
 
-  // Load room + player pool + existing picks (once per room — guarded so
+  // Load room + player pool + existing picks (once per room - guarded so
   // re-renders while building a team never re-hit /api/wc/lineups)
   useEffect(() => {
     if (!user) return
@@ -181,7 +181,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
 
       // Entries close at kickoff
       if (r.status !== 'waiting' || new Date() >= new Date(r.kickoff_at)) {
-        setRoomError('Entries are closed — the match has started.'); setRoomLoading(false); return
+        setRoomError('Entries are closed - the match has started.'); setRoomLoading(false); return
       }
 
       // Building a team is how you enter. Allow if already entered, you're the
@@ -197,9 +197,9 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
 
       setRoom(r as FantasyRoom)
 
-      // 2. Player pool — confirmed lineup or full squads from API-Football
+      // 2. Player pool - confirmed lineup or full squads from API-Football
       if (!/^\d+$/.test(r.match_id)) {
-        setRoomError('This room points to a legacy test match — create a new room from a real fixture')
+        setRoomError('This room points to a legacy test match - create a new room from a real fixture')
         setRoomLoading(false)
         return
       }
@@ -241,7 +241,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
     return () => { cancelled = true }
   }, [user?.id, roomId])  // user.id is stable; avoids reload on every render
 
-  // Header info — TLAs come from the room row
+  // Header info - TLAs come from the room row
   const match = room
     ? {
         homeTeam: { tla: room.home_team_tla },
@@ -262,7 +262,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   const fwdCount = picks.filter(p => p.player.position === 'FWD').length
 
   // ── Formation rules ────────────────────────────────────────────────────────
-  // GK: exactly 1 | DEF: 3–5 | MID: 3–5 | FWD: 1–3 | Total: 11
+  // GK: exactly 1 | DEF: 3-5 | MID: 3-5 | FWD: 1-3 | Total: 11
   const RULES = {
     GK:  { min: 1, max: 1 },
     DEF: { min: 3, max: 5 },
@@ -282,11 +282,11 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
     if (remaining < 0)     return `Over budget by ${Math.abs(remaining).toFixed(1)} cr`
     if (gkCount  !== 1)    return 'You need exactly 1 GK'
     if (defCount < 3)      return `Add ${3 - defCount} more DEF (min 3)`
-    if (defCount > 5)      return 'Too many DEF — max 5'
+    if (defCount > 5)      return 'Too many DEF - max 5'
     if (midCount < 3)      return `Add ${3 - midCount} more MID (min 3)`
-    if (midCount > 5)      return 'Too many MID — max 5'
+    if (midCount > 5)      return 'Too many MID - max 5'
     if (fwdCount < 1)      return 'Add at least 1 FWD'
-    if (fwdCount > 3)      return 'Too many FWD — max 3'
+    if (fwdCount > 3)      return 'Too many FWD - max 3'
     if (captains !== 1)    return 'Tap a player to set Captain (×2 pts)'
     if (vcs !== 1)         return 'Tap a player to set Vice-Captain (×1.5 pts)'
     return null
@@ -386,7 +386,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-3">⏳</div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Player list not available yet</p>
-          <p className="text-xs text-gray-400 mb-4">Squads usually appear closer to kickoff — check back soon.</p>
+          <p className="text-xs text-gray-400 mb-4">Squads usually appear closer to kickoff - check back soon.</p>
           <Link href={`/fantasy/room/${roomId}`} className="text-sm text-pulse-600 font-semibold">← Back to room</Link>
         </div>
       </div>
@@ -432,7 +432,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
             </div>
           </div>
 
-          {/* Validation pills — position counts + captain/budget */}
+          {/* Validation pills - position counts + captain/budget */}
           <div className="flex gap-1.5 mt-2 flex-wrap">
             {([
               // Position pills
@@ -483,12 +483,12 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
       </div>
 
       <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
-        {/* Provisional-squad notice — confirmed XI not announced yet */}
+        {/* Provisional-squad notice - confirmed XI not announced yet */}
         {lineupSource === 'squad' && (
           <div className="flex items-start gap-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 rounded-xl px-3 py-2.5">
             <span className="text-sm flex-shrink-0">ℹ️</span>
             <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
-              Showing full squads — the confirmed starting XI isn&apos;t out yet (usually ~1 h before kickoff).
+              Showing full squads - the confirmed starting XI isn&apos;t out yet (usually ~1 h before kickoff).
               Players who don&apos;t feature in the match score 0 points.
             </p>
           </div>
@@ -498,7 +498,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
         {picks.length > 0 && (
           <div>
             <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
-              Your team — tap to cycle C / VC role
+              Your team - tap to cycle C / VC role
             </p>
             <TeamStrip picks={picks} onCycleRole={cycleRole} />
           </div>

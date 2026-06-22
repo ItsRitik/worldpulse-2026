@@ -1,10 +1,10 @@
 'use client'
 
 /**
- * /fixtures/[fixtureId]/points — match-specific player points page
+ * /fixtures/[fixtureId]/points - match-specific player points page
  * ══════════════════════════════════════════════════════════════════
  * 1. Every player in the match ranked by fantasy points, high → low
- * 2. Points log — when each scoring event was awarded (minute by minute)
+ * 2. Points log - when each scoring event was awarded (minute by minute)
  *
  * Linked from live match cards in the fantasy lobby and from 1v1 rooms.
  * Refreshes every 60 s while the match is live.
@@ -155,7 +155,7 @@ export default function MatchPointsPage() {
                 'text-lg font-black tabular-nums px-3 py-1 rounded-xl',
                 isLive ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
               )}>
-                {points?.score ?? `${fixture.goals.home ?? 0}–${fixture.goals.away ?? 0}`}
+                {points?.score ?? `${fixture.goals.home ?? 0}-${fixture.goals.away ?? 0}`}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">{fixture.teams.away.name}</span>
@@ -240,7 +240,7 @@ export default function MatchPointsPage() {
           </div>
         )}
 
-        {/* ── Section 2: Points log — one list, time-wise (latest first) ──── */}
+        {/* ── Section 2: Points log - one list, time-wise (latest first) ──── */}
         {logRows.length > 0 && (
           <div className="bg-white dark:bg-gray-900 sm:rounded-2xl mt-4 border-y sm:border border-black/[0.06] dark:border-white/[0.06] overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-black/[0.05] dark:border-white/[0.05] bg-gray-50/60 dark:bg-gray-800/30">

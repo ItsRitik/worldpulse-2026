@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useLiveRoom — Supabase Realtime subscription for a fantasy room
+ * useLiveRoom - Supabase Realtime subscription for a fantasy room
  * ================================================================
  * FIX: channel + all .on() listeners must be chained BEFORE .subscribe().
  * Creating listeners inside an async callback causes the
@@ -12,7 +12,7 @@
  *  1. Build the full channel pipeline synchronously at effect start
  *  2. Call .subscribe() immediately
  *  3. Fetch initial data separately (doesn't affect the channel)
- *  4. Use supabase.removeChannel() — not channel.unsubscribe() — for clean teardown
+ *  4. Use supabase.removeChannel() - not channel.unsubscribe() - for clean teardown
  *  5. Unique channel name per mount prevents stale-channel collisions
  */
 
@@ -77,10 +77,10 @@ export function useLiveRoom(roomId: string | null): UseLiveRoomResult {
       )
       .subscribe((status) => {
         if (status === 'CHANNEL_ERROR') {
-          setError('Realtime connection error — check Supabase Realtime is enabled for these tables.')
+          setError('Realtime connection error - check Supabase Realtime is enabled for these tables.')
         }
         if (status === 'CLOSED') {
-          // channel was removed — normal during cleanup, ignore
+          // channel was removed - normal during cleanup, ignore
         }
       })
 
@@ -105,7 +105,7 @@ export function useLiveRoom(roomId: string | null): UseLiveRoomResult {
       setLoading(false)
     })()
 
-    // ── 3. Cleanup — removeChannel fully unregisters from Supabase ────────────
+    // ── 3. Cleanup - removeChannel fully unregisters from Supabase ────────────
     return () => {
       cancelled = true
       supabase.removeChannel(channel)

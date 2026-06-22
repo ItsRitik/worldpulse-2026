@@ -1,9 +1,9 @@
 /**
- * Player credit pricing — Dream11-style.
- * A player's value (≈7.5–12.5 credits, budget is 100 for 11) is driven by their
+ * Player credit pricing - Dream11-style.
+ * A player's value (≈7.5-12.5 credits, budget is 100 for 11) is driven by their
  * most recent club-season form: minutes-weighted match rating, goal involvement
- * per 90, season output volume, and how regularly they start. Stars land ~11–12.5,
- * regular starters ~9–10.5, squad/fringe ~7.5–8.5 — so you can't field all stars.
+ * per 90, season output volume, and how regularly they start. Stars land ~11-12.5,
+ * regular starters ~9-10.5, squad/fringe ~7.5-8.5 - so you can't field all stars.
  */
 
 export type Pos = 'GK' | 'DEF' | 'MID' | 'FWD'

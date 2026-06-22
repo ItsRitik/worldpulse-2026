@@ -1,5 +1,5 @@
 /**
- * teamTla — 3-letter code for a national team name.
+ * teamTla - 3-letter code for a national team name.
  * Shared by client cards and server scoring/lineup routes so the
  * `team_tla` stored on picks always matches what the scorer writes.
  */

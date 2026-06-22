@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * /fantasy/room/[roomId] — contest room hub (multi-team, up to 100 managers)
+ * /fantasy/room/[roomId] - contest room hub (multi-team, up to 100 managers)
  * ═══════════════════════════════════════════════════════════════════════════
  * One host, many guests. Join via the share link or the room code.
  *
@@ -194,11 +194,11 @@ function TeamSheetModal({
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
                     <span className="w-4 h-4 rounded-full bg-yellow-400 text-yellow-900 text-[8px] font-black flex items-center justify-center">C</span>
-                    <span className="text-xs font-semibold text-white truncate max-w-[70px]">{captain?.player_short ?? '—'}</span>
+                    <span className="text-xs font-semibold text-white truncate max-w-[70px]">{captain?.player_short ?? '-'}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-4 h-4 rounded-full bg-blue-400 text-blue-900 text-[8px] font-black flex items-center justify-center">V</span>
-                    <span className="text-xs font-semibold text-white truncate max-w-[70px]">{vc?.player_short ?? '—'}</span>
+                    <span className="text-xs font-semibold text-white truncate max-w-[70px]">{vc?.player_short ?? '-'}</span>
                   </div>
                 </div>
                 {showPoints
@@ -236,7 +236,7 @@ function StatusBadge({ status }: { status: FantasyRoom['status'] }) {
   return <span className={clsx('text-[10px] font-bold px-2 py-1 rounded-full uppercase', cfg[status])}>{status === 'live' ? '🔴 Live' : status}</span>
 }
 
-// Invite block — share link + room code
+// Invite block - share link + room code
 function InviteBox({ roomId, code, count, max }: { roomId: string; code: string; count: number; max: number }) {
   const [copied, setCopied] = useState<'link' | 'code' | null>(null)
   const link = typeof window !== 'undefined' ? `${window.location.origin}/fantasy/room/${roomId}` : ''
@@ -445,7 +445,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
             <div className="text-center px-4">
               {(isLive || isOver) && live ? (
                 <>
-                  <div className="text-2xl font-black text-gray-900 dark:text-gray-100 tabular-nums">{live.home_score} – {live.away_score}</div>
+                  <div className="text-2xl font-black text-gray-900 dark:text-gray-100 tabular-nums">{live.home_score} - {live.away_score}</div>
                   <div className={clsx('text-[10px] font-semibold mt-0.5', isLive ? 'text-red-500' : 'text-gray-400')}>
                     {isOver ? 'FT' : live.match_status === 'HT' ? 'HT' : formatMin(live.match_minute)}
                   </div>
@@ -473,10 +473,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
         )}
-        {/* Host hasn't entered yet — gentle nudge */}
+        {/* Host hasn't entered yet - gentle nudge */}
         {isHost && !isMember && open && (
           <p className="text-center text-[11px] text-amber-600 dark:text-amber-400">
-            You created this contest — build your team to enter it too.
+            You created this contest - build your team to enter it too.
           </p>
         )}
         {/* Can't enter: full, or already started */}
@@ -487,7 +487,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
         )}
         {!isMember && !open && (
           <div className="rounded-xl bg-gray-100 dark:bg-gray-800 px-4 py-3 text-center text-xs text-gray-500">
-            Entries are closed — you can watch the leaderboard but can&apos;t enter.
+            Entries are closed - you can watch the leaderboard but can&apos;t enter.
           </div>
         )}
 
@@ -500,7 +500,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
           </Link>
         )}
 
-        {/* Invite — host or anyone who's entered, pre-kickoff */}
+        {/* Invite - host or anyone who's entered, pre-kickoff */}
         {(isHost || isMember) && open && (
           <InviteBox roomId={roomId} code={room.room_code} count={members.length} max={room.max_players} />
         )}
@@ -576,7 +576,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
             })}
             {board.length === 0 && (
               <div className="py-10 text-center text-xs text-gray-400">
-                {isOver ? 'No one entered this contest.' : 'No teams entered yet — be the first.'}
+                {isOver ? 'No one entered this contest.' : 'No teams entered yet - be the first.'}
               </div>
             )}
           </div>

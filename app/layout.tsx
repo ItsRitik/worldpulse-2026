@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
   ),
-  title: 'WC26 Fantasy XI — FIFA World Cup 2026 Fantasy',
-  description: 'Pick your 11, challenge a friend, score live — match-wise fantasy for the FIFA World Cup 2026.',
+  title: 'WC26 Fantasy XI - FIFA World Cup 2026 Fantasy',
+  description: 'Pick your 11, challenge a friend, score live - match-wise fantasy for the FIFA World Cup 2026.',
   openGraph: {
     title: 'WC26 Fantasy XI · World Cup 2026 Fantasy',
     description: 'Pick your 11, challenge a friend, score live.',
-    images: ['/og-image.png'],
+    // og:image is provided automatically by app/opengraph-image.tsx
   },
 }
 

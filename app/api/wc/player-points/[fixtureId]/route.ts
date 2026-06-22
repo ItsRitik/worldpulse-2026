@@ -6,7 +6,7 @@
  * strip on live match cards.
  *
  * Computed on demand from API-Football (events + player stats) using the
- * same pure scoring engine the 1v1 rooms use — so card points always match
+ * same pure scoring engine the 1v1 rooms use - so card points always match
  * room points. Cached 60 s while live, 1 h once finished.
  */
 
@@ -95,7 +95,7 @@ export async function GET(
       },
     }
 
-    // Persisted append-only points log — written by the scoring cron with the
+    // Persisted append-only points log - written by the scoring cron with the
     // minute each delta was assigned. Null when the table/log isn't available.
     let log: PointsLogEntry[] | null = null
     try {
@@ -109,7 +109,7 @@ export async function GET(
       if (!logErr && logRows) {
         log = logRows.map(r => ({ ...r, points: Number(r.points) })) as PointsLogEntry[]
       }
-    } catch { /* table missing — page falls back to computed events */ }
+    } catch { /* table missing - page falls back to computed events */ }
 
     const players: PlayerPointsRow[] = Array.from(scores.values())
       .map(ps => ({
@@ -129,7 +129,7 @@ export async function GET(
       {
         matchStatus: status,
         elapsed:     fixture.fixture.status.elapsed,
-        score:       `${fixture.goals.home ?? 0}–${fixture.goals.away ?? 0}`,
+        score:       `${fixture.goals.home ?? 0}-${fixture.goals.away ?? 0}`,
         players,
         log,
         timestamp:   new Date().toISOString(),

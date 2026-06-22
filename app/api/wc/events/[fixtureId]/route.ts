@@ -1,7 +1,7 @@
 /**
  * GET /api/wc/events/[fixtureId]
  *
- * Lazy-loaded server route — called when user expands a live or finished fixture card.
+ * Lazy-loaded server route - called when user expands a live or finished fixture card.
  * For live matches the client polls every 15s. For finished matches, cache for 24h.
  * APIFOOTBALL_KEY stays server-side only.
  */

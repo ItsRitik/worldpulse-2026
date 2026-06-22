@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Room Create — step 1 of 2
+ * Room Create - step 1 of 2
  * ══════════════════════════
  * matchId = numeric API-Football fixture ID.
  * Creates the fantasy_rooms row, then redirects to /fantasy/room/{id}.
@@ -242,7 +242,7 @@ function CreateRoomPageInner() {
               { step: '1', label: 'Create the room', desc: 'You get a share link and a join code' },
               { step: '2', label: 'Build your squad', desc: 'Pick 11 players (100 cr budget)' },
               { step: '3', label: 'Invite friends', desc: 'Up to 100 managers join with the link or code' },
-              { step: '4', label: 'Match kicks off', desc: 'Points update live — highest score wins' },
+              { step: '4', label: 'Match kicks off', desc: 'Points update live - highest score wins' },
             ].map(s => (
               <div key={s.step} className="flex items-start gap-3">
                 <div className="w-5 h-5 rounded-full bg-pulse-100 dark:bg-pulse-900/30 text-pulse-700 dark:text-pulse-300 text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -275,7 +275,7 @@ function CreateRoomPageInner() {
           <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900/40 rounded-xl px-4 py-2.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
             <p className="text-xs text-green-700 dark:text-green-400 font-medium">
-              Lineup just announced — picks lock in under 1 hour!
+              Lineup just announced - picks lock in under 1 hour!
             </p>
           </div>
         )}

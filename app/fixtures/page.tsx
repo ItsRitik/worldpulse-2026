@@ -114,7 +114,7 @@ function StatusBadge({ status, elapsed }: { status: string; elapsed: number | nu
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Fixture card — taps through to match detail page
+// Fixture card - taps through to match detail page
 // ─────────────────────────────────────────────────────────────────────────────
 
 function FixtureCard({ fixture: f }: { fixture: AFWCFixture }) {
@@ -125,8 +125,8 @@ function FixtureCard({ fixture: f }: { fixture: AFWCFixture }) {
   const homeWin    = teams.home.winner === true
   const awayWin    = teams.away.winner === true
   // `goals` = live running tally (always current); score.fulltime is null until FT
-  // score?.fulltime object itself is {home:null,away:null} for live matches — truthy, so ?? never fires
-  // Fix: use goals directly — it equals fulltime once the match is over anyway
+  // score?.fulltime object itself is {home:null,away:null} for live matches - truthy, so ?? never fires
+  // Fix: use goals directly - it equals fulltime once the match is over anyway
   const ft         = goals
 
   return (
@@ -137,7 +137,7 @@ function FixtureCard({ fixture: f }: { fixture: AFWCFixture }) {
         isLive && 'bg-green-50/40 dark:bg-green-950/15',
       )}
     >
-      {/* Round label — every match */}
+      {/* Round label - every match */}
       <div className="mb-2 flex items-center justify-between">
         <span className={clsx(
           'text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full',
@@ -175,7 +175,7 @@ function FixtureCard({ fixture: f }: { fixture: AFWCFixture }) {
               isLive ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
             )}>
               <span>{ft.home ?? 0}</span>
-              <span className="text-sm font-normal opacity-50">–</span>
+              <span className="text-sm font-normal opacity-50">-</span>
               <span>{ft.away ?? 0}</span>
             </div>
           ) : (
@@ -211,7 +211,7 @@ function FixtureCard({ fixture: f }: { fixture: AFWCFixture }) {
         </svg>
       </div>
 
-      {/* Live player points — top 3, updates every minute */}
+      {/* Live player points - top 3, updates every minute */}
       {isLive && <LiveTopPoints fixtureId={fixture.id} asLink={false} />}
 
       {/* Venue + referee */}
@@ -387,7 +387,7 @@ function FixturesTab({ data, isLoading }: { data: FixturesResponse | undefined; 
         </div>
       ) : filter === 'all' ? (
         <>
-          {/* ── 1. Live now — always pinned on top ── */}
+          {/* ── 1. Live now - always pinned on top ── */}
           {sections.live.length > 0 && (
             <div>
               <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-2 bg-green-50/95 dark:bg-green-950/40 backdrop-blur-sm border-b border-green-100/60 dark:border-green-900/30">
@@ -403,7 +403,7 @@ function FixturesTab({ data, isLoading }: { data: FixturesResponse | undefined; 
             </div>
           )}
 
-          {/* ── 2. Just finished today — the score you came to check ── */}
+          {/* ── 2. Just finished today - the score you came to check ── */}
           {sections.finishedToday.length > 0 && (
             <div>
               <div className="sticky top-0 z-10 flex items-center gap-3 px-4 py-2 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-black/[0.04] dark:border-white/[0.04]">
@@ -417,7 +417,7 @@ function FixturesTab({ data, isLoading }: { data: FixturesResponse | undefined; 
             </div>
           )}
 
-          {/* ── 3. Upcoming — chronological, grouped by local day ── */}
+          {/* ── 3. Upcoming - chronological, grouped by local day ── */}
           {sections.upcomingByDate.map(([dateKey, matches]) => (
             <div key={dateKey}>
               <div className="sticky top-0 z-10 flex items-center gap-3 px-4 py-2 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-black/[0.04] dark:border-white/[0.04]">
@@ -433,7 +433,7 @@ function FixturesTab({ data, isLoading }: { data: FixturesResponse | undefined; 
             </div>
           ))}
 
-          {/* ── 4. Earlier results — collapsed at the bottom ── */}
+          {/* ── 4. Earlier results - collapsed at the bottom ── */}
           {sections.earlierCount > 0 && (
             <div>
               <button
@@ -580,7 +580,7 @@ function GroupTable({ group }: { group: AFStandingGroup }) {
                     <div className="flex items-center gap-0.5">
                       {formChars.length > 0
                         ? formChars.slice(-5).map((c, fi) => <FormPill key={fi} r={c} />)
-                        : <span className="text-[10px] text-gray-300 dark:text-gray-600">–</span>}
+                        : <span className="text-[10px] text-gray-300 dark:text-gray-600">-</span>}
                     </div>
                   </td>
                 </tr>
@@ -650,7 +650,7 @@ export default function FixturesPage() {
           <div>
             <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Fixtures & Standings</h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              FIFA World Cup 2026 · 11 Jun – 19 Jul
+              FIFA World Cup 2026 · 11 Jun - 19 Jul
               {data && (
                 <span className="ml-2 text-green-600 dark:text-green-400 font-medium">· {data.total} matches</span>
               )}

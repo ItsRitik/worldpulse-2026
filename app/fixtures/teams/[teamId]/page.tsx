@@ -227,7 +227,7 @@ function FixtureRow({ f, teamId }: { f: AFWCFixture; teamId: number }) {
             'text-sm font-bold tabular-nums',
             isLive ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-gray-200'
           )}>
-            {myScore}–{oppScore}
+            {myScore}-{oppScore}
           </p>
         ) : (
           <p className="text-sm font-semibold text-gray-500 tabular-nums">{format(d, 'HH:mm')}</p>
