@@ -36,9 +36,13 @@ jobs:
             echo "::error::Set SCORING_BASE_URL and SCORING_SECRET repo secrets."
             exit 1
           fi
+          # Strip any trailing slash so we never request a double-slash path
+          # (which Vercel answers with a 308 redirect).
+          BASE_URL="${BASE_URL%/}"
           for i in 1 2 3 4 5; do
             echo "Ping $i/5 at $(date -u '+%H:%M:%S') UTC"
-            code=$(curl -s -o /dev/null -w '%{http_code}' \
+            # -L follows redirects (belt-and-suspenders) and reports the final code.
+            code=$(curl -s -L -o /dev/null -w '%{http_code}' \
               --max-time 30 \
               -X GET "$BASE_URL/api/scoring/cron" \
               -H "Authorization: Bearer $SECRET")
