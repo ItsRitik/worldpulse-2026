@@ -141,10 +141,13 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 h-14 bg-white/85 dark:bg-gray-950/85 backdrop-blur-md border-b border-black/[0.08] dark:border-white/[0.08] flex items-center px-4 gap-0 shadow-[0_1px_12px_-4px_rgba(0,0,0,0.12)]">
       {/* Logo + spinning mini football */}
       <Link href="/" className="flex items-center gap-2 mr-6 flex-shrink-0 group">
-        <svg width="18" height="18" viewBox="0 0 24 24" className="ball-spin group-hover:[animation-duration:0.6s]" aria-hidden>
-          <circle cx="12" cy="12" r="11" fill="#0F6E56" />
-          <path d="M12 5l3.5 2.5-1.3 4.1h-4.4L8.5 7.5z" fill="#fff" />
-          <path d="M12 5V2.5M15.5 7.5l2.2-1.3M14.2 11.6l2.6.9M9.8 11.6l-2.6.9M8.5 7.5L6.3 6.2" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" fill="none" />
+        <svg width="20" height="20" viewBox="0 0 24 24" className="ball-spin group-hover:[animation-duration:2s]" aria-hidden>
+          <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#0b3d24" strokeWidth="1.3" />
+          {/* centre pentagon */}
+          <path d="M12 7.3 L16.5 10.6 L14.8 15.8 L9.2 15.8 L7.5 10.6 Z" fill="#0b3d24" />
+          {/* spokes from each pentagon vertex out to the rim */}
+          <path d="M12 7.3 V1.8 M16.5 10.6 L21.3 9 M14.8 15.8 L17.7 20 M9.2 15.8 L6.3 20 M7.5 10.6 L2.7 9"
+            stroke="#0b3d24" strokeWidth="1.2" strokeLinecap="round" fill="none" />
         </svg>
         <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 tracking-tight">
           WC26 Fantasy <span className="text-pulse-600">XI</span>

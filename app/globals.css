@@ -107,7 +107,7 @@ body {
 
 /* Spinning football (nav logo, loaders) */
 @keyframes ball-spin { to { transform: rotate(360deg); } }
-.ball-spin { animation: ball-spin 3.5s linear infinite; transform-origin: 50% 50%; }
+.ball-spin { animation: ball-spin 9s linear infinite; transform-origin: 50% 50%; }
 
 /* Mown-pitch stripes - alternating green bands, the classic stadium look */
 .pitch-bg {
