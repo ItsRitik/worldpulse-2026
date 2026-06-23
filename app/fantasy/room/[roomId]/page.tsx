@@ -634,7 +634,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                   <button
                     onClick={() => viewable && openTeam(m.user_id, isMe ? `${m.name} (you)` : m.name)}
                     disabled={!viewable}
-                    className={clsx('flex-1 min-w-0 flex items-center gap-3 pl-4 py-3 text-left', !viewable && 'cursor-default')}
+                    className={clsx('flex-1 min-w-0 flex items-center gap-3 pl-4 py-3 text-left', canRemove ? 'pr-1' : 'pr-4', !viewable && 'cursor-default')}
                   >
                     <span className="w-6 text-center flex-shrink-0">
                       {medal

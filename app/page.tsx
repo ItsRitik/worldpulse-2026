@@ -18,6 +18,7 @@ import type { AFWCFixture } from '@/lib/api/apifootball'
 import { teamTla } from '@/lib/api/tla'
 import { format } from 'date-fns'
 import clsx from 'clsx'
+import { WorldCupHero } from '@/components/home/WorldCupHero'
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
@@ -429,6 +430,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-screen-xl mx-auto px-4 py-6">
+
+        {/* ── Animated WC26 hero ── */}
+        <div className="mb-6">
+          <WorldCupHero />
+        </div>
 
         {/* ── Featured match ── */}
         {isLoading && !featured ? (
