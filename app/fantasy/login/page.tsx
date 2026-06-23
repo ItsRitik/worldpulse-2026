@@ -12,7 +12,7 @@ import { SignIn } from '@clerk/nextjs'
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center pt-14">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" />
       </div>
     }>

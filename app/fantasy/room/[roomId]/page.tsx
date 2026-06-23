@@ -225,6 +225,74 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 }
 
+// Live countdown to kickoff (days/hrs/min/sec)
+function Countdown({ to }: { to: string }) {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t) }, [])
+  const diff = Math.max(0, new Date(to).getTime() - now)
+  const d = Math.floor(diff / 86400000)
+  const h = Math.floor(diff / 3600000) % 24
+  const m = Math.floor(diff / 60000) % 60
+  const s = Math.floor(diff / 1000) % 60
+  const Unit = ({ v, l }: { v: number; l: string }) => (
+    <div className="flex flex-col items-center min-w-[34px]">
+      <span className="text-xl font-black text-white tabular-nums leading-none">{String(v).padStart(2, '0')}</span>
+      <span className="text-[8px] text-white/50 uppercase tracking-wider mt-1">{l}</span>
+    </div>
+  )
+  return (
+    <div className="flex items-center justify-center gap-1.5">
+      {d > 0 && <><Unit v={d} l="days" /><span className="text-white/30 font-bold pb-3">:</span></>}
+      <Unit v={h} l="hrs" /><span className="text-white/30 font-bold pb-3">:</span>
+      <Unit v={m} l="min" /><span className="text-white/30 font-bold pb-3">:</span>
+      <Unit v={s} l="sec" />
+    </div>
+  )
+}
+
+// Lightweight canvas confetti — fires once when a winner is crowned
+function WinnerConfetti() {
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = canvas.offsetWidth * dpr
+    canvas.height = canvas.offsetHeight * dpr
+    const colors = ['#0F6E56', '#1D9E75', '#facc15', '#fbbf24', '#ffffff', '#34d399']
+    const parts = Array.from({ length: 110 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * canvas.height,
+      r: (3 + Math.random() * 5) * dpr,
+      vy: (2 + Math.random() * 3.5) * dpr,
+      vx: (-1.2 + Math.random() * 2.4) * dpr,
+      rot: Math.random() * Math.PI,
+      vr: -0.25 + Math.random() * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }))
+    let raf = 0, frame = 0
+    const tick = () => {
+      frame++
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      for (const p of parts) {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.04 * dpr; p.rot += p.vr
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot)
+        ctx.fillStyle = p.color
+        ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6)
+        ctx.restore()
+      }
+      if (frame < 240) raf = requestAnimationFrame(tick)
+    }
+    tick()
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden />
+}
+
+const MEDAL = ['🥇', '🥈', '🥉']
+
 function StatusBadge({ status }: { status: FantasyRoom['status'] }) {
   const cfg = {
     waiting:   'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
@@ -386,12 +454,12 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
   // ── Loading / error ──
   if (authLoading || roomLoading) {
-    return <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center pt-14"><div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" /></div>
+    return <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center"><div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" /></div>
   }
   if (!user) { router.replace(`/fantasy/login?next=/fantasy/room/${roomId}`); return null }
   if (roomError || !room) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-3">🔍</div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Room not found</h2>
@@ -406,7 +474,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const openTeam = (uid: string, label: string) => setTeamModal({ userId: uid, label })
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 pb-24">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-24">
       {teamModal && (
         <TeamSheetModal
           roomId={roomId}
@@ -434,34 +502,58 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
       <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
 
-        {/* Match score / teams */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black/[0.07] dark:border-white/[0.07] p-4">
-          <div className="flex items-center justify-between">
-            <div className="text-center flex-1">
-              {homeLogo ? <img src={homeLogo} alt="" className="w-9 h-9 object-contain mx-auto" onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }} />
-                        : <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto" />}
-              <div className="text-xs font-bold text-gray-800 dark:text-gray-200 mt-1">{room.home_team_tla}</div>
+        {/* Stadium hero — pitch background, crests, live score or countdown */}
+        <div className="relative overflow-hidden rounded-2xl pitch-bg dark:pitch-bg-dark border border-black/[0.07] dark:border-white/[0.07] shadow-sm">
+          <div className="pitch-sweep" />
+          {/* halfway line + centre circle */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" aria-hidden>
+            <line x1="200" y1="0" x2="200" y2="150" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+            <circle cx="200" cy="75" r="32" fill="none" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+            <circle cx="200" cy="75" r="2.5" fill="white" fillOpacity="0.6" />
+          </svg>
+
+          <div className="relative px-5 py-5">
+            <div className="flex items-center justify-between gap-2">
+              {/* Home */}
+              <div className="flex flex-col items-center gap-2 w-20 flex-shrink-0">
+                <div className="w-14 h-14 rounded-full bg-white/90 ring-2 ring-white/40 flex items-center justify-center shadow-md float-y">
+                  {homeLogo ? <img src={homeLogo} alt="" className="w-9 h-9 object-contain" onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }} />
+                            : <span className="text-base font-black text-gray-700">{room.home_team_tla}</span>}
+                </div>
+                <span className="text-xs font-bold text-white drop-shadow text-center leading-tight">{room.home_team_tla}</span>
+              </div>
+
+              {/* Centre: score (live/over) or countdown (pre-match) */}
+              <div className="text-center flex-1 min-w-0">
+                {(isLive || isOver) && live ? (
+                  <>
+                    <div className="text-5xl font-black text-white tabular-nums tracking-tight drop-shadow-lg">
+                      {live.home_score}<span className="text-white/40 font-light mx-1.5">-</span>{live.away_score}
+                    </div>
+                    <div className={clsx('inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide',
+                      isLive ? 'bg-red-500 text-white' : 'bg-white/20 text-white')}>
+                      {isLive && <span className="w-1.5 h-1.5 rounded-full bg-white live-dot" />}
+                      {isOver ? 'Full time' : live.match_status === 'HT' ? 'Half time' : formatMin(live.match_minute)}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-[9px] text-white/60 uppercase tracking-[0.2em] mb-2">Kicks off in</div>
+                    <Countdown to={room.kickoff_at} />
+                  </>
+                )}
+              </div>
+
+              {/* Away */}
+              <div className="flex flex-col items-center gap-2 w-20 flex-shrink-0">
+                <div className="w-14 h-14 rounded-full bg-white/90 ring-2 ring-white/40 flex items-center justify-center shadow-md float-y" style={{ animationDelay: '0.5s' }}>
+                  {awayLogo ? <img src={awayLogo} alt="" className="w-9 h-9 object-contain" onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }} />
+                            : <span className="text-base font-black text-gray-700">{room.away_team_tla}</span>}
+                </div>
+                <span className="text-xs font-bold text-white drop-shadow text-center leading-tight">{room.away_team_tla}</span>
+              </div>
             </div>
-            <div className="text-center px-4">
-              {(isLive || isOver) && live ? (
-                <>
-                  <div className="text-2xl font-black text-gray-900 dark:text-gray-100 tabular-nums">{live.home_score} - {live.away_score}</div>
-                  <div className={clsx('text-[10px] font-semibold mt-0.5', isLive ? 'text-red-500' : 'text-gray-400')}>
-                    {isOver ? 'FT' : live.match_status === 'HT' ? 'HT' : formatMin(live.match_minute)}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-xs font-bold text-gray-300 dark:text-gray-600">VS</div>
-                  <div className="text-[10px] text-gray-400 mt-1">{formatDate(room.kickoff_at)}</div>
-                </>
-              )}
-            </div>
-            <div className="text-center flex-1">
-              {awayLogo ? <img src={awayLogo} alt="" className="w-9 h-9 object-contain mx-auto" onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }} />
-                        : <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto" />}
-              <div className="text-xs font-bold text-gray-800 dark:text-gray-200 mt-1">{room.away_team_tla}</div>
-            </div>
+            <p className="text-center text-[10px] text-white/60 mt-4">{formatDate(room.kickoff_at)}</p>
           </div>
         </div>
 
@@ -515,9 +607,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
         )}
 
         {/* ── Leaderboard / participants ── */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black/[0.07] dark:border-white/[0.07] overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black/[0.07] dark:border-white/[0.07] overflow-hidden shadow-sm">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-black/[0.05] dark:border-white/[0.05] bg-gray-50/60 dark:bg-gray-800/30">
-            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="flex items-center gap-2 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              {isLive && <span className="w-1.5 h-1.5 rounded-full bg-red-500 live-dot" />}
               {isLive || isOver ? 'Leaderboard' : 'Managers entered'}
             </span>
             <span className="text-[10px] text-gray-400 tabular-nums">{entries} / {room.max_players}</span>
@@ -529,35 +622,46 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
               const showRank = isLive || isOver
               const viewable = canSee(m.user_id)
               const canRemove = isHost && open && !m.is_host   // host kicks others pre-kickoff
+              const medal = showRank && i < 3 ? MEDAL[i] : null
               return (
                 <div key={m.user_id}
-                  className={clsx('flex items-center gap-3 transition-colors',
-                    isMe ? 'bg-pulse-50/60 dark:bg-pulse-900/15' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40')}>
+                  className={clsx('relative flex items-center gap-3 transition-colors fade-in-up',
+                    isMe ? 'bg-pulse-50/60 dark:bg-pulse-900/15' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40')}
+                  style={{ animationDelay: `${Math.min(i, 12) * 35}ms` }}>
+                  {/* podium accent bar for top 3 */}
+                  {medal && <span className={clsx('absolute left-0 top-0 bottom-0 w-1',
+                    i === 0 ? 'bg-amber-400' : i === 1 ? 'bg-gray-300' : 'bg-orange-400')} />}
                   <button
                     onClick={() => viewable && openTeam(m.user_id, isMe ? `${m.name} (you)` : m.name)}
                     disabled={!viewable}
                     className={clsx('flex-1 min-w-0 flex items-center gap-3 pl-4 py-3 text-left', !viewable && 'cursor-default')}
                   >
-                    <span className={clsx('w-6 text-center text-sm font-bold tabular-nums flex-shrink-0',
-                      showRank && i === 0 ? 'text-amber-500' : showRank && i < 3 ? 'text-pulse-600 dark:text-pulse-400' : 'text-gray-300 dark:text-gray-600')}>
-                      {showRank ? i + 1 : ''}
+                    <span className="w-6 text-center flex-shrink-0">
+                      {medal
+                        ? <span className="text-lg pop-in inline-block">{medal}</span>
+                        : <span className={clsx('text-sm font-bold tabular-nums', showRank ? 'text-gray-400 dark:text-gray-500' : 'text-gray-300 dark:text-gray-600')}>{showRank ? i + 1 : '·'}</span>}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-pulse-100 dark:bg-pulse-900/30 flex items-center justify-center text-sm flex-shrink-0">
+                    <div className={clsx('w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0 ring-2',
+                      isMe ? 'bg-pulse-100 dark:bg-pulse-900/40 ring-pulse-300 dark:ring-pulse-700' : 'bg-gray-100 dark:bg-gray-800 ring-transparent')}>
                       {m.is_host ? '👑' : '👤'}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{m.name}</span>
-                        {isMe && <span className="text-[9px] font-bold text-pulse-600 dark:text-pulse-400">YOU</span>}
+                        {isMe && <span className="text-[9px] font-bold text-white bg-pulse-500 px-1.5 py-0.5 rounded-full">YOU</span>}
                       </div>
-                      <div className="text-[10px] text-gray-400">
+                      <div className="text-[10px] text-gray-400 truncate">
                         {m.is_host ? 'Host · ' : ''}
-                        {showRank ? (viewable ? 'Tap to view team' : 'Team revealed at kick-off') : (isMe ? 'Tap to view your team' : 'Entered · team hidden until kick-off')}
+                        {showRank ? (viewable ? 'Tap to view team' : '🔒 Revealed at kick-off') : (isMe ? 'Tap to view your team' : '🔒 Hidden until kick-off')}
                       </div>
                     </div>
                     {showRank && (
-                      <span className="text-base font-black text-gray-900 dark:text-gray-100 tabular-nums flex-shrink-0">
-                        {(m.total_points ?? 0).toFixed(1)}
+                      <span className={clsx('flex-shrink-0 flex flex-col items-end leading-none')}>
+                        <span className={clsx('text-lg font-black tabular-nums',
+                          i === 0 ? 'text-amber-500' : 'text-gray-900 dark:text-gray-100')}>
+                          {(m.total_points ?? 0).toFixed(1)}
+                        </span>
+                        <span className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5">pts</span>
                       </span>
                     )}
                   </button>
@@ -575,20 +679,31 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
               )
             })}
             {board.length === 0 && (
-              <div className="py-10 text-center text-xs text-gray-400">
-                {isOver ? 'No one entered this contest.' : 'No teams entered yet - be the first.'}
+              <div className="py-12 text-center px-6">
+                <div className="text-3xl mb-2 float-y">⚽</div>
+                <p className="text-xs text-gray-400">
+                  {isOver ? 'No one entered this contest.' : 'No teams entered yet — be the first to pick your XI.'}
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Winner banner */}
+        {/* Winner banner — confetti + shine */}
         {isOver && room.winner_id && (
-          <div className="rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 p-4 text-center">
-            <p className="text-[11px] font-bold text-amber-900/70 uppercase tracking-wider">Winner</p>
-            <p className="text-lg font-black text-amber-950">
-              {room.winner_id === user.id ? '🏆 You won!' : `🏆 ${names[room.winner_id] ?? 'Manager'}`}
-            </p>
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 p-5 text-center shadow-lg">
+            <WinnerConfetti />
+            <div className="absolute inset-0 shine-sweep pointer-events-none" />
+            <div className="relative">
+              <div className="text-4xl mb-1 float-y inline-block">🏆</div>
+              <p className="text-[11px] font-bold text-amber-900/70 uppercase tracking-[0.2em]">Champion</p>
+              <p className="text-xl font-black text-amber-950 mt-0.5">
+                {room.winner_id === user.id ? 'You won!' : (names[room.winner_id] ?? 'Manager')}
+              </p>
+              <p className="text-[11px] text-amber-900/60 mt-1">
+                {(board[0]?.total_points ?? 0).toFixed(1)} pts · {matchLabel}
+              </p>
+            </div>
           </div>
         )}
       </div>

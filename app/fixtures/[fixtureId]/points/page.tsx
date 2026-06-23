@@ -116,7 +116,7 @@ export default function MatchPointsPage() {
         .sort((a, b) => b.minute - a.minute || b.points - a.points)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 pb-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-10">
       <div className="max-w-screen-sm mx-auto">
 
         {/* Back nav */}

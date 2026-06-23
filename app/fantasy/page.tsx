@@ -696,7 +696,7 @@ export default function FantasyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {user ? <AuthenticatedLobby userId={user.id} /> : <GuestLanding />}
     </div>
   )

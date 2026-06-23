@@ -72,7 +72,7 @@ function adaptFixture(f: AFWCFixture, isFriendly = false): NormalisedMatch {
 export default function CreateRoomPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center pt-14">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" />
       </div>
     }>
@@ -113,7 +113,7 @@ function CreateRoomPageInner() {
 
   if (loading || (isRealId && matchLoading)) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center pt-14">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" />
       </div>
     )
@@ -121,7 +121,7 @@ function CreateRoomPageInner() {
 
   if (!match) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
         <div className="text-center">
           <div className="text-4xl mb-3">⚽</div>
           <p className="text-sm text-gray-400 mb-4">Match not found. Go back and pick one.</p>
@@ -163,7 +163,7 @@ function CreateRoomPageInner() {
   const alreadyStarted = kicksOffIn <= 0
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 pb-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-10">
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 border-b border-black/[0.07] dark:border-white/[0.07] px-4 py-3">
         <div className="max-w-lg mx-auto flex items-center gap-3">

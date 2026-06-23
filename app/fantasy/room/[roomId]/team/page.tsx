@@ -303,7 +303,7 @@ export default function TeamViewPage({ params }: { params: { roomId: string } })
   // ── Loading / errors ──────────────────────────────────────────────────────
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center pt-14">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin" />
       </div>
     )
@@ -316,7 +316,7 @@ export default function TeamViewPage({ params }: { params: { roomId: string } })
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-14 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-4">🔒</div>
           <p className="text-sm text-gray-300 mb-5">{error}</p>
@@ -341,7 +341,7 @@ export default function TeamViewPage({ params }: { params: { roomId: string } })
   const isOpponent = targetUserId !== null && targetUserId !== user.id
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col pt-14">
+    <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <div className="bg-gray-900 border-b border-white/[0.07] px-4 py-3 flex-shrink-0">
         <div className="max-w-lg mx-auto flex items-center gap-3">

@@ -138,11 +138,15 @@ export function Navbar() {
   const tickerMatch = pool[tickerIndex % Math.max(pool.length, 1)]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-white dark:bg-gray-950 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center px-4 gap-0">
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 mr-6 flex-shrink-0">
-        <div className="w-2 h-2 rounded-full bg-pulse-400 live-dot" />
-        <span className="text-sm font-medium text-gray-900 dark:text-gray-100 tracking-tight">
+    <nav className="sticky top-0 z-50 h-14 bg-white/85 dark:bg-gray-950/85 backdrop-blur-md border-b border-black/[0.08] dark:border-white/[0.08] flex items-center px-4 gap-0 shadow-[0_1px_12px_-4px_rgba(0,0,0,0.12)]">
+      {/* Logo + spinning mini football */}
+      <Link href="/" className="flex items-center gap-2 mr-6 flex-shrink-0 group">
+        <svg width="18" height="18" viewBox="0 0 24 24" className="ball-spin group-hover:[animation-duration:0.6s]" aria-hidden>
+          <circle cx="12" cy="12" r="11" fill="#0F6E56" />
+          <path d="M12 5l3.5 2.5-1.3 4.1h-4.4L8.5 7.5z" fill="#fff" />
+          <path d="M12 5V2.5M15.5 7.5l2.2-1.3M14.2 11.6l2.6.9M9.8 11.6l-2.6.9M8.5 7.5L6.3 6.2" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" fill="none" />
+        </svg>
+        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 tracking-tight">
           WC26 Fantasy <span className="text-pulse-600">XI</span>
         </span>
       </Link>

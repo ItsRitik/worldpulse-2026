@@ -100,3 +100,98 @@ body {
   from { width: 0%; }
 }
 .bar-animated { animation: bar-fill 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ⚽ Football theme + motion library
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Spinning football (nav logo, loaders) */
+@keyframes ball-spin { to { transform: rotate(360deg); } }
+.ball-spin { animation: ball-spin 3.5s linear infinite; transform-origin: 50% 50%; }
+
+/* Mown-pitch stripes — alternating green bands, the classic stadium look */
+.pitch-bg {
+  background-color: #137a3a;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 38px, rgba(0,0,0,0.05) 38px 76px),
+    radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.10), transparent 60%);
+}
+.pitch-bg-dark {
+  background-color: #0c3d20;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 38px, rgba(0,0,0,0.10) 38px 76px),
+    radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.08), transparent 60%);
+}
+
+/* Slow drifting sheen across the pitch — alive, not distracting */
+@keyframes pitch-sweep {
+  0%   { transform: translateX(-60%) skewX(-12deg); opacity: 0; }
+  50%  { opacity: 0.5; }
+  100% { transform: translateX(160%) skewX(-12deg); opacity: 0; }
+}
+.pitch-sweep {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+  width: 40%; pointer-events: none;
+  animation: pitch-sweep 7s ease-in-out infinite;
+}
+
+/* Staggered entrance for lists (leaderboard rows, cards) */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Pop — rank badges, medals settling in */
+@keyframes pop-in {
+  0%   { transform: scale(0.4); opacity: 0; }
+  70%  { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pop-in { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Animated brand gradient (live headers) */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Trophy / winner shine sweep */
+@keyframes shine {
+  0%   { background-position: -150% 0; }
+  60%, 100% { background-position: 250% 0; }
+}
+.shine-sweep {
+  background-image: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shine 2.6s ease-in-out infinite;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.shimmer { position: relative; overflow: hidden; }
+.shimmer::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* Soft float (decorative balls/badges) */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.float-y { animation: float-y 4s ease-in-out infinite; }
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .ball-spin, .pitch-sweep, .animated-gradient, .shine-sweep, .shimmer::after,
+  .float-y, .fade-in-up, .pop-in, .live-dot, .sentiment-ring, .bar-animated {
+    animation: none !important;
+  }
+}

@@ -363,7 +363,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   // ── Loading / error states ────────────────────────────────────────────────────
   if (authLoading || roomLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center pt-14">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-pulse-400 border-t-transparent animate-spin" />
       </div>
     )
@@ -371,7 +371,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   if (!user) { router.replace(`/fantasy/login?next=/fantasy/room/${roomId}/pick`); return null }
   if (roomError) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-3">🚫</div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{roomError}</p>
@@ -382,7 +382,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   }
   if (!match || lineup.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-3">⏳</div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Player list not available yet</p>
@@ -394,7 +394,7 @@ export default function PickPage({ params }: { params: { roomId: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-14 pb-32">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-32">
       {/* Sticky header */}
       <div className="sticky top-14 z-40 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-black/[0.07] dark:border-white/[0.07] px-4 py-3">
         <div className="max-w-lg mx-auto">
