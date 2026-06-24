@@ -71,7 +71,14 @@ export async function POST(
     const matchMinute = fixture.fixture.status.elapsed ?? null
     const homeScore   = fixture.goals.home ?? 0
     const awayScore   = fixture.goals.away ?? 0
-    const isFinished  = matchStatus === 'FT' || matchStatus === 'AET' || matchStatus === 'PEN'
+
+    // Status buckets so room transitions are correct for every fixture state.
+    const LIVE_STATUSES     = new Set(['1H', '2H', 'HT', 'ET', 'BT', 'P', 'INT', 'LIVE'])
+    const FINISHED_STATUSES = new Set(['FT', 'AET', 'PEN'])
+    const VOID_STATUSES     = new Set(['PST', 'CANC', 'ABD', 'SUSP', 'AWD', 'WO'])  // postponed / cancelled / abandoned
+    const isFinished = FINISHED_STATUSES.has(matchStatus)
+    const isLiveNow  = LIVE_STATUSES.has(matchStatus)
+    const isVoid     = VOID_STATUSES.has(matchStatus)
 
     // ── Step 2: Score every player ───────────────────────────────────────────
     const playerScores = scoreMatch(events, stats, matchStatus, matchMinute)
@@ -244,8 +251,13 @@ export async function POST(
       })
 
       if (isFinished && room.status !== 'finished') {
+        // Match over -> settle the contest with the top member as winner.
         roomStatusUpdates.push({ id: room.id, status: 'finished', winner_id: board[0]?.user_id ?? null })
-      } else if (room.status === 'locked') {
+      } else if (isVoid && room.status !== 'cancelled') {
+        // Postponed / cancelled / abandoned -> void the room (never strands it 'live').
+        roomStatusUpdates.push({ id: room.id, status: 'cancelled', winner_id: null })
+      } else if (isLiveNow && room.status === 'locked') {
+        // Match has actually kicked off -> go live. (Stay 'locked' while still NS.)
         roomStatusUpdates.push({ id: room.id, status: 'live', winner_id: null })
       }
     }

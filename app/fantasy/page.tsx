@@ -430,6 +430,19 @@ function AuthenticatedLobby({ userId }: { userId: string }) {
 
   useEffect(() => { loadRooms() }, [loadRooms])
 
+  // Safety net: nudge scoring for my kicked-off, unfinished rooms whenever the
+  // lobby loads - so a room progresses (locked -> live -> finished) even if no
+  // one has the room page open and the external cron is lagging. Server-side
+  // throttling keeps this cheap; capped so a big list can't spam the API.
+  useEffect(() => {
+    const now = Date.now()
+    const active = myRooms.filter(r =>
+      r.status !== 'finished' && r.status !== 'cancelled' &&
+      new Date(r.kickoff_at).getTime() <= now)
+    active.slice(0, 5).forEach(r =>
+      fetch(`/api/room/${r.id}/sync`, { method: 'POST' }).catch(() => {}))
+  }, [myRooms])
+
   // Auto-switch to Matches tab if no rooms yet
   useEffect(() => {
     if (!loading && myRooms.length === 0) setTab('matches')
