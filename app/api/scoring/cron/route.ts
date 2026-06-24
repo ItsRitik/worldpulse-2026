@@ -20,7 +20,17 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
 
 const SECRET  = process.env.SCORING_SECRET ?? 'dev-secret'
-const BASE    = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+
+// Resolve our own origin from the request so the fan-out to the match scorer
+// works regardless of whether NEXT_PUBLIC_BASE_URL is set correctly.
+function selfOrigin(req: NextRequest): string {
+  const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host')
+  if (host) {
+    const proto = req.headers.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+    return `${proto}://${host}`
+  }
+  return process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+}
 
 function adminClient() {
   return createClient<Database>(
@@ -39,6 +49,8 @@ export async function GET(request: NextRequest) {
   if (token !== SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const BASE = selfOrigin(request)
 
   try {
     const db = adminClient()

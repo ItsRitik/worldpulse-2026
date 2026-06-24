@@ -353,10 +353,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
   const { room, liveState: live, loading: roomLoading, error: roomError } = useLiveRoom(roomId)
 
-  // Team logos
+  // Team logos + authoritative fixture status (refreshes so an open tab notices
+  // the match has ended even if the scorer is lagging).
   const { data: matchInfo } = useSWR(
     room && /^\d+$/.test(room.match_id) ? `/api/wc/match/${room.match_id}` : null,
-    swrFetcher, { revalidateOnFocus: false, errorRetryCount: 1 },
+    swrFetcher, { revalidateOnFocus: false, errorRetryCount: 1, refreshInterval: 30_000 },
   )
   const homeLogo: string | undefined = matchInfo?.fixture?.teams?.home?.logo
   const awayLogo: string | undefined = matchInfo?.fixture?.teams?.away?.logo
@@ -399,7 +400,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     return () => { supabase.removeChannel(ch) }
   }, [roomId, loadMembers])
 
-  // Self-healing scoring trigger (cron-independent) once kicked off
+  // Self-healing scoring trigger (cron-independent) once kicked off.
+  // If the real fixture is already over but this room hasn't flipped to
+  // 'finished' yet, poll faster so the result + final points land quickly.
+  const apiShort = matchInfo?.fixture?.fixture?.status?.short as string | undefined
+  const apiDone  = apiShort === 'FT' || apiShort === 'AET' || apiShort === 'PEN'
   useEffect(() => {
     if (!room) return
     const kickedOff = Date.now() >= new Date(room.kickoff_at).getTime()
@@ -407,9 +412,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     let stopped = false
     const sync = () => { if (!stopped) fetch(`/api/room/${roomId}/sync`, { method: 'POST' }).catch(() => {}) }
     sync()
-    const t = setInterval(sync, 30_000)
+    const t = setInterval(sync, apiDone ? 8_000 : 20_000)
     return () => { stopped = true; clearInterval(t) }
-  }, [roomId, room?.status, room?.kickoff_at])
+  }, [roomId, room?.status, room?.kickoff_at, apiDone])
 
   const [teamModal, setTeamModal] = useState<{ userId: string; label: string } | null>(null)
   const [removing, setRemoving] = useState<string | null>(null)
@@ -442,6 +447,15 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const canEdit   = isMember && open                       // edit my entry
   const canEnter  = !isMember && open && (isHost || !full) // build a team to enter
   const matchLabel = room?.match_label ?? 'Match'
+
+  // Authoritative fixture fallback: the match is really over but the room DB
+  // hasn't caught up yet (scorer lag). Show the true FT score meanwhile.
+  const apiHomeScore = matchInfo?.fixture?.goals?.home as number | null | undefined
+  const apiAwayScore = matchInfo?.fixture?.goals?.away as number | null | undefined
+  const finalizing = apiDone && !!room && room.status !== 'finished' && room.status !== 'cancelled'
+  const showScore  = isLive || isOver || finalizing
+  const homeScore  = finalizing ? (apiHomeScore ?? live?.home_score ?? 0) : (live?.home_score ?? apiHomeScore ?? 0)
+  const awayScore  = finalizing ? (apiAwayScore ?? live?.away_score ?? 0) : (live?.away_score ?? apiAwayScore ?? 0)
 
   // Leaderboard ordering: by points when scoring has begun, else host-first then join order
   const board: MemberRow[] = members
@@ -523,18 +537,24 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                 <span className="text-xs font-bold text-white drop-shadow text-center leading-tight">{room.home_team_tla}</span>
               </div>
 
-              {/* Centre: score (live/over) or countdown (pre-match) */}
+              {/* Centre: score (live/over/finalizing) or countdown (pre-match) */}
               <div className="text-center flex-1 min-w-0">
-                {(isLive || isOver) && live ? (
+                {showScore ? (
                   <>
                     <div className="text-5xl font-black text-white tabular-nums tracking-tight drop-shadow-lg">
-                      {live.home_score}<span className="text-white/40 font-light mx-1.5">-</span>{live.away_score}
+                      {homeScore}<span className="text-white/40 font-light mx-1.5">-</span>{awayScore}
                     </div>
                     <div className={clsx('inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide',
-                      isLive ? 'bg-red-500 text-white' : 'bg-white/20 text-white')}>
-                      {isLive && <span className="w-1.5 h-1.5 rounded-full bg-white live-dot" />}
-                      {isOver ? 'Full time' : live.match_status === 'HT' ? 'Half time' : formatMin(live.match_minute)}
+                      isLive && !finalizing ? 'bg-red-500 text-white' : 'bg-white/20 text-white')}>
+                      {isLive && !finalizing && <span className="w-1.5 h-1.5 rounded-full bg-white live-dot" />}
+                      {(isOver || finalizing) ? 'Full time' : live?.match_status === 'HT' ? 'Half time' : formatMin(live?.match_minute ?? null)}
                     </div>
+                    {finalizing && (
+                      <div className="flex items-center justify-center gap-1.5 mt-2 text-[9px] text-white/70">
+                        <span className="w-3 h-3 rounded-full border-2 border-white/50 border-t-transparent animate-spin" />
+                        Finalizing final points...
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

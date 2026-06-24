@@ -26,11 +26,22 @@ function adminClient() {
   )
 }
 
+// Resolve our own origin from the incoming request so the server-to-server call
+// to the scorer always works, even if NEXT_PUBLIC_BASE_URL is unset/misconfigured.
+function selfOrigin(req: NextRequest): string {
+  const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host')
+  if (host) {
+    const proto = req.headers.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+    return `${proto}://${host}`
+  }
+  return process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+}
+
 const FINISHED = new Set(['finished', 'cancelled'])
 const THROTTLE_MS = 45_000
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { roomId: string } },
 ) {
   const db = adminClient()
@@ -80,7 +91,7 @@ export async function POST(
   }
 
   // 3. Run the match scorer (it owns all the writes + status transitions)
-  const base   = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+  const base   = selfOrigin(req)
   const secret = process.env.SCORING_SECRET ?? ''
   try {
     const res = await fetch(`${base}/api/scoring/match/${room.match_id}`, {
